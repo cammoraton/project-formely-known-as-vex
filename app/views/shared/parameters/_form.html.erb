@@ -1,0 +1,37 @@
+<% nested_parameters = object.parameters.select{|a| !a.parameters.empty? or a.value.nil? } -%>
+<div id="parameters" class="tab_nav">
+  <ul>
+    <li><a href="#parameters_default">Default</a></li>
+    <% nested_parameters.each do |param| -%>
+  	  <% if param.parameters.select{|a| !a.parameters.empty? or a.value.nil?}.empty? -%>
+  	<li><a href="#parameters_<%= param.key %>"><%= param.key.capitalize %></a><span class='ui-icon ui-icon-close'>Remove Scope</span></li>
+  	  <% else -%>
+  	<li><a href="#parameters_<%= param.key %>_container"><%= param.key.capitalize %></a><span class='ui-icon ui-icon-close'>Remove Scope</span></li>
+  	  <% end -%>
+  	<% end -%>
+  </ul>
+  <div id ="parameters_default">
+  <table>
+    <tr class="header">
+      <th>Key</th>
+      <th>Value</th>
+      <th></th>
+    </tr>
+<%= render :partial => 'shared/parameters/fields', 
+           :collection => object.parameters.select{|a| a.parameters.empty? and !a.value.nil? }, 
+           :locals => { :form => "#{form_name}[parameters]", :scope_class => "add_scope" } %>
+  </table>
+  <%= link_to_function "Add parameter", "", :class => "add_parameter", :field_name => "#{form_name}[parameters]" %>
+  </div>
+<% unless nested_parameters.empty? -%>
+<%= render :partial => 'shared/parameters/nested_fields', 
+           :collection => nested_parameters, 
+           :locals => { :form => "#{form_name}[parameters][]", :unnested_form => "#{form_name}[parameters]", :scope_prepend => "parameters_", :current_class => "tab_nav" } %>
+<% end -%>
+</div>
+
+
+
+
+
+

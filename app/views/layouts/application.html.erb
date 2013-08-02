@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <%= yield :title %>
+  <%= stylesheet_link_tag    "application", :media => "all" %>
+  <%= javascript_include_tag "application" %>
+  <%= javascript_include_tag params[:controller] %>
+  <%= csrf_meta_tags %>
+  <%= yield :head %>
+</head>
+<body>
+  <article>
+    <header>
+    <%= yield :heading %>
+      <nav>
+      	<div class="nav-links">
+        <ul id="item-top-nav">
+          <%= yield :content_navigation %>
+        </ul>
+        </div>
+      </nav>
+    </header>
+    <div id="content">
+      <%= yield :content %>
+    </div>
+    <footer>
+      <%= yield :footer %>
+    </footer>
+  </article>
+<%= yield :main %>
+  <nav id="sidebar" class="sidebar">
+  	<%= yield :sidebar %>
+  </nav>
+  <nav id="breadcrumbs" class="breadcrumbs">
+  	<%= yield :breadcrumbs %>
+  </nav>
+  <div id="top-bar">
+  	<ul>
+  	  <%= render :partial => "layouts/top_menu" %>
+  	  <%= yield :top_menu %>
+    </ul>
+  </div>
+</body>
+</html>

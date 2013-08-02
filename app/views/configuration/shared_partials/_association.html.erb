@@ -1,0 +1,37 @@
+<% assignment_cache = @object.assignment_cache 
+   sources = @object.assignment_sources_cache -%>
+<% unless assignment_cache[key].nil? or assignment_cache[key].empty? -%>
+  <table>
+  	<col width="30%">
+  	<col width="70%">
+    <tr>
+      <th>Name</th>
+      <th>Defined In</th>
+    </tr>
+  <% assignment_cache[key].each do |item| 
+       id = item["id"] 
+       source = sources.source_by_id(id) -%>
+    <tr>
+      <td><%= link_to item["name"], polymorphic_path(key.singularize, :id => item["name"]) %></td>
+      <td>
+      <% unless source.nil?
+      	   name = assignment_cache.name_by_id(source)
+      	   type = assignment_cache.type_by_id(source) -%>
+      	<% if name.nil? or type.nil? -%>
+      	   <%= @object.name %>
+      	<% else %>
+      	  <%= link_to name, polymorphic_path(type.downcase.singularize, :id => name) %>
+      	  <span class="source-type">(<%= type.singularize.camelize %>)</span>
+      	<% end -%>
+      <% else -%>
+      	  Unknown
+      <% end -%>
+      </td>
+    </tr>
+  <% end %>
+  </table>
+<% else %>
+  <aside class="no-data indent">
+     None assigned
+  </aside>
+<% end %>

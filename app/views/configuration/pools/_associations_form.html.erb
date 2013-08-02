@@ -1,0 +1,12 @@
+<div class="column-left">
+  <h1>Classes</h1>
+  <p class="indent"><%= f.text_field :element_tokens, "data-pre" => @object.elements.local.map{ |a| { :id => a._id, :name => a.name }}.to_json %></p>
+  <h1>Nodes</h1>
+  <p class="indent"><%= f.text_field :node_tokens, "data-pre" => @object.nodes.local.map{ |a| { :id => a._id, :name => a.name }}.to_json %></p>
+</div>
+<div class="column-right">
+  <h1>Services</h1>
+  <p class="indent"><%= f.text_field :service_tokens, "data-pre" => @object.services.local.map{ |a| { :id => a._id, :name => a.name }}.to_json %></p>
+  <h1>Roles</h1>
+  <p class="indent"><%= f.text_field :role_tokens, "data-pre" => @object.roles.local.map{ |a| { :id => a._id, :name => a.name }}.to_json %></p>
+</div>

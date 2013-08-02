@@ -1,0 +1,52 @@
+<% 
+if current_class == "tab_nav" 
+  tab_class = "tab_nav_alt"
+  scope_class = "add_scope_alt"
+  default_scope_class = "add_scope"
+else
+  tab_class = "tab_nav"
+  scope_class = "add_scope"
+  default_scope_class = "add_scope_alt"
+end  
+-%>
+<%= fields_for form, nested_fields, :index => nil do |f| %>
+  <% nested_parameters = f.object.parameters.select{|a| !a.parameters.empty? or a.value.nil? } -%>
+  <% unless nested_parameters.empty? -%>
+  <div id="<%= scope_prepend %><%= f.object.key %>_container">
+  <div class="data">
+  <div id="<%= scope_prepend %><%= f.object.key %>" class="<%= tab_class %>">
+    <ul>
+  	  <li><a href="#<%= scope_prepend %><%= f.object.key %>_default">Default</a></li>
+  	  <% nested_parameters.each do |param| -%>
+  	     <% if param.parameters.select{|a| !a.parameters.empty? or a.value.nil?}.empty? -%>
+  	  <li><a href="#<%= scope_prepend %><%= f.object.key %>_<%= param.key %>"><%= param.key.capitalize %></a><span class='ui-icon ui-icon-close'>Remove Scope</span></li>
+  	     <% else -%>
+  	  <li><a href="#<%= scope_prepend %><%= f.object.key %>_<%= param.key %>_container"><%= param.key.capitalize %></a><span class='ui-icon ui-icon-close'>Remove Scope</span></li>
+  	     <% end -%>
+  	  <% end -%>
+    </ul>
+  <div id="<%= scope_prepend %><%= f.object.key %>_default">
+  <% else -%>
+  <div id="<%= scope_prepend %><%= f.object.key %>">
+  <% end -%>
+  <%= f.hidden_field :key, :value => f.object.key %>
+  <table>
+  	<tr class="header">
+  		<th>Key</th>
+  		<th>Value</th>
+  		<th></th>
+  	</tr>
+  	<%= render :partial => 'shared/parameters/fields', 
+  	           :collection => f.object.parameters.select{|a| a.parameters.empty? and !a.value.nil? }, 
+  	           :locals => { :form => "#{form}[parameters]", :scope_class => default_scope_class } %>
+  </table>
+  <%= link_to_function "Add parameter", "return false;", :class => "add_parameter", :field_name => "#{unnested_form}[][parameters]" %>
+  <% unless nested_parameters.empty? -%>
+  </div>
+  <%= render :partial => 'shared/parameters/nested_fields',
+             :collection => nested_parameters, 
+             :locals => { :form => "#{form}[parameters][]", :unnested_form => "#{form}[parameters]", :scope_prepend => "#{scope_prepend}#{f.object.key}_", :current_class => tab_class } %>
+  </div></div>
+  <% end -%>
+</div>
+<% end -%>

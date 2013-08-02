@@ -1,0 +1,60 @@
+@mixin pulse {
+  -webkit-animation: 1s pulse ease-out;
+  -webkit-animation-iteration-count: infinite; 
+  -moz-animation-name: pulse;
+  -o-animation-name: pulse;
+  animation-name: pulse;
+}
+
+@mixin subtle-blink {
+  -webkit-animation: 1s subtle-blink ease-out;
+  -webkit-animation-iteration-count: infinite; 
+  -moz-animation: 1s subtle-blink ease-out;
+  -moz-animation-iteration-count: infinite; 
+  -o-animation-name: 1s subtle-blink;
+  -o-animation-iteration-count: infinite; 
+  animation: 1s subtle-blink;
+  animation-iteration-count: infinite; 
+}
+
+@-webkit-keyframes pulse {
+   0% { -webkit-transform: scale(1); } 
+  50% { -webkit-transform: scale(1.1); }
+ 100% { -webkit-transform: scale(1); }
+}
+@-moz-keyframes pulse {
+   0% { -moz-transform: scale(1); }  
+  50% { -moz-transform: scale(1.1); }
+ 100% { -moz-transform: scale(1); }
+}
+@-o-keyframes pulse {
+   0% { -o-transform: scale(1); }  
+  50% { -o-transform: scale(1.1); }
+ 100% { -o-transform: scale(1); }
+}
+@keyframes pulse {
+   0% { transform: scale(1); } 
+  50% { transform: scale(1.1); }
+ 100% { transform: scale(1); }
+}
+
+@-webkit-keyframes subtle-blink {
+   0% { opacity: 0.95; }  
+  50% { opacity: 1.0; }
+ 100% { opacity: 0.95; }
+}
+@-moz-keyframes subtle-blink {
+   0% { opacity: 0.95; }  
+  50% { opacity: 1.0; }
+ 100% { opacity: 0.95; }
+}
+@-o-keyframes subtle-blink {
+   0% { opacity: 0.95; }  
+  50% { opacity: 1.0; }
+ 100% { opacity: 0.95; }
+}
+@keyframes subtle-blink {
+   0% { opacity: 0.95; }  
+  50% { opacity: 1.0; }
+ 100% { opacity: 0.95; }
+}

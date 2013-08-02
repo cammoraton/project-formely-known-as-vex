@@ -1,0 +1,32 @@
+<% content_for :title do %>
+  <title>Vex - Edit <%= self.class.const_get(params[:type].camelize).routing_path.capitalize %>: <%= @object.name %></title>
+<% end %>
+
+<% content_for :head do %>
+  <%= javascript_include_tag "parameter" %>
+  <script>
+  $(function() {
+  <% vex_class.vex_assignments.keys.each do |item| -%>
+     $("#<%= vex_class.to_s.downcase %>_<%= item.to_s.singularize %>_tokens").tokenInput("/<%= self.class.const_get(item.to_s.singularize.camelize).routing_path.pluralize %>.json", {
+     	crossDomain: false,
+     	prePopulate: $("#<%= vex_class.to_s.downcase %>_<%= item.to_s.singularize %>_tokens").data("pre"),
+     	preventDuplicates: true,
+     	theme: "facebook"
+     });
+  <% end -%>
+  });
+  </script>
+<% end %>
+
+<% content_for :heading do %>
+  <span class="annotate">(<%= self.class.const_get(params[:type].camelize).routing_path.singularize %>::edit)</span>
+  <h1><%= @object.name %></h1>
+  <p></p>
+<% end %>
+
+<% content_for :content do %>
+  <% if flash[:notice] %>
+    <%= flash[:notice] %>
+  <% end %>
+  <%= render :partial => "form", :locals => { :action => 'update' }%>
+<% end %>

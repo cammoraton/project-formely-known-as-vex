@@ -1,0 +1,30 @@
+<% content_for :title do %>
+  <title>Vex - <%= self.class.const_get(params[:type].camelize).routing_path.capitalize %></title>
+<% end %>
+
+<% content_for :heading do %>
+  <span class="annotate">(<%= self.class.const_get(params[:type].camelize).routing_path.singularize %>)</span>
+  <span class="action-bar"><%= link_to "New #{self.class.const_get(params[:type].camelize).routing_path.singularize}", polymorphic_path(params[:type].singularize, :action => 'new') %></span>
+  <h1><%= self.class.const_get(params[:type].camelize).routing_path.capitalize %></h1>
+  <p></p>
+<% end %>
+
+<% content_for :content do %>
+  <table>
+    <tr>
+      <th>Name</th>
+      <th>Actions</th>
+    </tr>
+  <% @objects.each do |object| %>
+  <tr>
+  	<td><%= link_to "#{object.name}", polymorphic_path(params[:type].singularize, :id => object.name) %></td>
+    <td>
+      <%= link_to "Edit", polymorphic_path(params[:type].singularize, :action => 'edit', :id => object.name) %>
+      <%= link_to "Destroy", polymorphic_path(params[:type].singularize, :id => object.name), :method => 'delete', :confirm => 'Are you sure?' %>
+    </td>
+  </tr>
+<% end %>
+</table>
+<% end %>
+
+<%= render :partial => "#{params[:controller]}/#{params[:type]}/#{params[:action]}" rescue nil %>

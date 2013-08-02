@@ -1,0 +1,126 @@
+@import "scss-imports/mixins";
+@import "scss-imports/fonts";
+@import "scss-imports/animations";
+
+body { background: #828277; font-family: 'Telex', Arial, sans-serif; }
+
+nav.sidebar, nav.breadcrumbs { position: absolute; color: #ffffff; }
+nav.sidebar     { width: 10em; left: 0; top: 8em; }
+nav.breadcrumbs { left: 15em; top: 2em; }
+
+article { background: #ffffff; position: relative; width: 75em; left: 10em; top: 1.5em; @include box-shadow( 0, 0, 1em, #000000); @include rounded(5px); }
+
+header, footer {
+  color: #FFFFFF;
+  span { padding: 0.5em; }
+  span.action-bar { 
+    float: right; 
+    a       { color: #63615A; padding: 0.2em; text-shadow: 3px 3px #000000; font-size: 1.5em; font-weight: bold; text-decoration: none; }
+    a:hover { color: #F0EADD; }
+  }
+  span.annotate { 
+    float: left; 
+    color: #FF9900; 
+    a       { color: #FF9900; text-decoration: none; }
+    a:hover { color: #FFAA00; }
+  }
+  h1 { padding: 1em; margin-left: 0.5em; font-size: 3em; text-shadow: 4px 4px #000000; }
+  p { margin-top: -7.5em; padding: 3em; padding-bottom: 1em; margin-left: 1.5em; margin-right: 1em; color: #dddddd; text-shadow: 2px 2px #000000; }
+}
+
+header { @include box-shadow( 0, 0, 3px, #000000); @include rounded-top(5px); @include linear-gradient-with-image(image-path('noisy-texture-100x100.png'), #404040, #0e0e0e); }
+footer {
+  @include box-shadow( 0, 0, 3px, #000000); 
+  @include rounded-bottom(5px); 
+  @include linear-gradient-with-image(image-path('noisy-texture-100x100.png'), #0e0e0e, #404040); 
+  min-height: 4em;
+  margin-top: 1em;
+  h1 { margin-left: 2em; font-size: 1.5em; }
+  p { margin-top: -5.5em; }
+}
+
+header nav { 
+  @include box-shadow( 0, 0, 3px, #000000);
+  background: #000000;
+  padding: 0.5em;
+  min-height: 1em;
+  bottom: 0px;
+  .nav-links { margin-left: 3.5em; }
+  ul { padding: 0em; margin: 0em; }
+  li { list-style:none; display:inline; }
+  a { text-decoration: none; font-size: 1.1em; padding: 0.5em; font-weight: bold; color: #FFFFFF; text-shadow: 2px 2px #101010;}
+  a:hover { color: #FF9900; }
+  a.active {color: #FFCC00; }  
+}
+
+table { border-collapse:collapse; min-width: 40em; margin-top: 0.5em; margin-bottom: 0.5em; @include box-shadow( 0, 0, 2px, #000000); }
+table { 
+  a { text-decoration: none; color: #505050; }
+  a:hover { color: #FF9900; text-shadow: 1px 1px #505050; }
+}
+
+tr {
+  background: #F0EADD;
+  td { @include box-shadow( 0, 0, 2px, #C0BAAD); }
+}
+tr:nth-child(odd) {
+  background: #D0CABD;
+  td { @include box-shadow( 0, 0, 2px, #F0EADD); }
+}
+th { @include box-shadow( 0, 0, 1px, #000000); font-weight: bold; color: #ffffff;  background: #43413A; }
+
+.indent { padding-left: 1em; padding-right: 1em;}
+.box {
+  display: block;
+  box-sizing:border-box; 
+    -moz-box-sizing:border-box; 
+    -webkit-box-sizing:border-box; 
+  overflow: hidden;
+  .column-left, .column-right {
+    display: inline-block; 
+    width: 50%; 
+    height: 100%;
+  }
+  .column-right { float: right; }
+  .column-left  { float: left; }
+}
+
+#top-bar { 
+  color: #000000; 
+  @include box-shadow( 0, 0, 1em, #000000);
+  @include linear-gradient-with-image(image-path('noisy-texture-100x100.png'), #FFCC00, #FF9900); 
+  position: fixed; 
+  width: 100%; 
+  height: 1.5em; 
+  top: 0; 
+  left: 0;
+  ul { padding: 0em; margin: 0em; margin-left: 0.5em; }
+  li { list-style:none; display:inline; padding: 0em; margin: 0em; margin-left: 1em; top: -0.4em; position: relative; }
+  li { ul { position: absolute; top: 1.5em; display: none; margin-left: 0em; } }
+  img { margin: 0em; padding: 0em; display: inline; white-space: nowrap; overflow: hidden; top: 0.4em; position: relative; }
+}
+
+#content {
+  margin-top: 1em;
+  padding-left: 4.5em;  
+  padding-right: 4.5em; 
+  h1, h2, h3 { font-weight: bold; color: #88b020; margin: 0em; }
+  aside { 
+    @include rounded(5px);
+    @include box-shadow( 0, 0, 2px, #000000);
+    margin: 0.5em;
+    margin-left: 1em;
+    margin-right: 1em;
+    padding: 0.5em;
+    padding-top: 0.8em;
+    padding-bottom: 0.8em;
+    width: 29em; 
+    background: #F0EADD;
+    color: #505050;
+    text-align: center;
+  }
+}
+#associations table {
+  min-width: 30em;
+  margin-left: 1em;
+}

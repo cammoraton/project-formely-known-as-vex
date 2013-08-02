@@ -1,0 +1,55 @@
+<% content_for :title do %>
+  <title>Vex - <%= self.class.const_get(params[:type].camelize).routing_path.singularize.capitalize %>: <%= @object.name %></title>
+<% end %>
+
+<% content_for :head do %>
+  <%= render :partial => "shared/parameters/head" %>
+  <%= javascript_include_tag "dependencies" %>
+<% end %>
+
+<% content_for :sidebar do %>
+<% end %>
+
+<% content_for :heading do %>
+  	<span class="annotate">(<%= self.class.const_get(params[:type].camelize).routing_path.singularize.downcase %>)</span>
+    <span class="action-bar">
+      <%= link_to "Edit", polymorphic_path(params[:type].singularize, :action => 'edit') %>
+      <%= link_to "Destroy", polymorphic_path(params[:type].singularize), :method => 'delete' %>
+    </span>
+  <h1><%= @object.name %></h1>
+  <p><%= @object.description %></p>
+<% end %>
+
+<% content_for :content_navigation do %>
+  <li><a href="#configuration">Configuration</a></li>
+  <li><a href="#dependencies">Dependencies</a></li>
+  <% if @object.simulates_hiera? -%>
+  <li><a href="#hiera">Hiera Simulation</a></li>
+  <% end -%>
+<% end %>
+
+<% content_for :content do %>
+  <div id="configuration">
+    <h1>Parameters</h1>
+    <div class="indent">
+      <%= render :partial => "configuration/shared_partials/hashed", :locals => { :item => @object.configuration } %>
+    </div>
+    <div id="associations">
+      <%= render :partial => "#{params[:controller]}/#{params[:type].pluralize}/associations" rescue nil %>
+    </div>
+  </div>
+  <div id="dependencies">
+  	<%= render :partial => "configuration/shared_partials/dependencies" %>
+  </div>
+  <% if @object.simulates_hiera? -%>
+  <div id="hiera">
+  	<h1>Not Implemented</h1>
+  	<p>Show what hiera is going to see</p>
+  </div>
+  <% end -%>
+<% end %>
+
+<% content_for :footer do %>
+<% end %>
+
+<%= render :partial => "#{params[:controller]}/#{params[:type]}/#{params[:action]}" rescue nil %>
