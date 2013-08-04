@@ -2,16 +2,6 @@ module Vex
   module Dsl
     module Wrappers
       module Parameters
-        def parameters
-          logger.debug("[DEBUG] - Parameters called" )
-          retval = Array.new
-          self.data.each_pair do |key,value|
-            
-            logger.debug("[DEBUG] --- Wrapping #{key} = #{value}" )
-            retval.push(Vex::Dsl::Wrappers::Parameters::Wrapper.new(key, value))
-          end
-          retval
-        end
   
         def parameters=(val)
           logger.debug("[DEBUG] - Parameters passed as #{val.inspect}" )

@@ -34,7 +34,7 @@ class Configuration
   
   # Pass this back as an array of key/values to make the forms a little easier  
   def parameters
-    # Putting this in the wrapper makes so it is never called.
+    # Putting this in the wrapper makes it so it is never called.
     retval = Array.new
     self.data.each_pair do |key,value|
       retval.push(Vex::Dsl::Wrappers::Parameters::Wrapper.new(key, value))
