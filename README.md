@@ -44,7 +44,7 @@ After basics are done, there's still an awful lot of work to do on this.
 - A metric ton of commenting and tests need re-re-done.
 - Once we've done all of that we may as well do mcollective integration.
 - Should package it and any dependencies for debian/rhel based systems.  This needs to be EASY to install.  That also means packaging things like elasticsearch if we go that route.
-- Optimize, optimize, optimize.  This needs to scale to millions of servers and some highly complex interdependencies.
+- Optimize, optimize, optimize.
 - Need to do examples for jenkins.
 - Need to do a hiera backend.
 - Need to write agents for elasticsearch.
