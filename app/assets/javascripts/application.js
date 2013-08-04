@@ -16,7 +16,6 @@
 //= require jquery.ui.button
 //= require jquery.tokeninput
 //= require d3
-//= require hulk
 //
 
 // Jquery-ui is entirely too overwrought for what we want for a few things

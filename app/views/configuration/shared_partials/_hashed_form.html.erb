@@ -1,0 +1,18 @@
+<div id="parameters" class="tab_nav">
+  <ul>
+    <li><a href="#parameters_default">Default</a></li>
+  </ul>
+<div id="parameters_default">
+<table>
+  <tr class="header">
+    <th>Key</th>
+    <th>Value</th>
+    <th></th>
+  </tr>
+<%= render :partial => 'configuration/shared_partials/parameter_fields', 
+           :collection => @object.parameters, 
+           :locals => { :form => "#{form_name}[parameters]", :scope_class => "add_scope" } %>
+</table>
+<%= link_to_function "Add parameter", "", :class => "add_parameter", :field_name => "#{form_name}[parameters]" %>
+</div>
+</div>

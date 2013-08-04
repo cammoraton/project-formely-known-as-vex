@@ -7,6 +7,7 @@ module Vex
       
       include Vex::Dsl::Wrappers::Association
       include Vex::Dsl::Wrappers::Dependencies
+      include Vex::Dsl::Wrappers::Parameters
       module ClassMethods
         
       end

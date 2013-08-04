@@ -15,8 +15,8 @@ class Configuration
   
   key :assignment_ids, Array
   
-  attr_accessible :name, :description, :configuration
-  attr_reader     :configuration
+  attr_accessible :name, :description, :parameters
+  attr_reader     :parameters
   
   many :assignments, :in => :assignment_ids, :class => Configuration
   
@@ -31,19 +31,15 @@ class Configuration
   
   timestamps!
   
-  # Pass this back as an array to make the forms a little easier
-  def configuration
-    self.data.to_a || []
-  end
   
-  def configuration=(val)
-    if val.is_a? Array
-      # Parse and convert to a hash
-    elsif val.is_a? Hash
-      self.data = val
-    else
-      raise(ArgumentError, "Value must be a hash or array")
+  # Pass this back as an array of key/values to make the forms a little easier  
+  def parameters
+    # Putting this in the wrapper makes so it is never called.
+    retval = Array.new
+    self.data.each_pair do |key,value|
+      retval.push(Vex::Dsl::Wrappers::Parameters::Wrapper.new(key, value))
     end
+    retval
   end
   
   def to_param

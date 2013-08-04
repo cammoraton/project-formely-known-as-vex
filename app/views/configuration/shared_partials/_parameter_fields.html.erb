@@ -1,0 +1,9 @@
+<tr class="parameter">
+<%= fields_for form, parameter_fields, :index => nil do |f| %>
+  <td><%= f.text_field :key, :disabled => true %><%= f.hidden_field :key %></td>
+  <td><%= f.text_field :value %></td>
+  <td>
+  <%= link_to_function "Delete", "$(this).parents('.parameter').remove()", :class => "remove" %>
+  </td>
+<% end -%>
+</tr>
