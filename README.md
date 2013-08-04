@@ -15,17 +15,14 @@ Using mongo as all we're basically doing is adding relationships to serialized d
 
 We're optimizing towards read performance.  If there's a way to make a trade-off that improves read but beats up saving, I'll be making that trade-off.
 One big example of this is updating associations and dependency caches, rather than generating them dynamically.  This gets retrieval of the end object down to a
-single query(microseconds on my laptop with a few thousand objects of test data) but makes saves take up into the seconds(since we're really overzealous right now).
+single query(microseconds on my laptop with a few thousand objects of test data) but makes saves take up into the seconds(since our caching needs refactored in the worst way).
 
-I have some ideas on how to improve performance(IE: caching is currently a mixup of 3 different methods) or at least the user-experience) on write, but we're going to be prioritizing retrieval wherever there's a choice to be made.
-
-Currently vex is very, very raw and missing some absolutely core functionality.
+Currently vex is very, very raw.
 
 Core Functionality remaining:
 - YAML import/export.
-- Editing the parameters.  This has proved tricky.  Mainly from an HCI perspective.
-- Navigation suuuckkks.
-- Deduplication in the caches.  Maybe.  I'm waffling on this a bit.  Seeing multiple instances of dependencies based on where they attach is actually kind of nice and it's pretty easy to get a unique list at the endpoints where we'd care.
+- Navigation suuuckkks. Right now you go to: /nodes, /roles, /services, /pools, or /classes and define objects.  There's an index for each but no launch page.
+- You have to know triggers.json, triggered_by.json, index.json(IE: /nodes.json) and object.json(ie: /nodes/test.json) exist to actually do anything with it.
 
 After basics are done, there's still an awful lot of work to do on this.
 - I need to figure out how I want to do common things.  Like default roles which will include DNS/etc.  Monitoring.
