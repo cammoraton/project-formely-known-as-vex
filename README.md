@@ -17,7 +17,7 @@ We're optimizing towards read performance.  If there's a way to make a trade-off
 One big example of this is updating associations and dependency caches, rather than generating them dynamically.  This gets retrieval of the end object down to a
 single query(microseconds on my laptop with a few thousand objects of test data) but makes saves take up into the seconds(since we're really overzealous right now).
 
-I have some ideas on how to improve performance(or at least the user-experience) on write, but we're going to be prioritizing retrieval wherever there's a choice to be made.
+I have some ideas on how to improve performance(IE: caching is currently a mixup of 3 different methods) or at least the user-experience) on write, but we're going to be prioritizing retrieval wherever there's a choice to be made.
 
 Currently vex is very, very raw and missing some absolutely core functionality.
 
