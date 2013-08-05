@@ -26,7 +26,7 @@ module Vex
         end
         
         private
-        # This is one hell of a method.
+        # This is one hell of a method.  Lots of "code smell"
         def update_cache
           logger.info("[INFO]  - update_cache: Updating cache for object id: #{self._id}")
           old_cache = self.cache.dup  # Duplicate cache
@@ -60,12 +60,12 @@ module Vex
           # First level of inheritance is special
           unless query_depth < 1
             assignments[1] = query_interface.where({ :$and => [{ :assignment_ids => {:$in => self.assignment_ids}},
-                                                             { :_id => { :$nin => self.assignment_ids }}]}).fields(:name, :_id, :_type, :assignment_ids, :cache).all
+                                                             { :_id => { :$nin => self.assignment_ids + [ self._id ] }}]}).fields(:name, :_id, :_type, :assignment_ids, :cache).all
             logger.debug("[DEBUG] - update_cache: Executed query for depth 1, found #{assignments[1].count} records")
             # Now go through through the rest
             unless query_depth < 2
               (2..query_depth).each do |depth|
-                current_ids = Array.new
+                current_ids = [ self._id ] 
                 (0..depth-1).each do |current|
                   current_ids = (current_ids + assignments[current].map{|a| a._id}).uniq
                 end
@@ -94,21 +94,78 @@ module Vex
             self.vex_assignments.keys.each do |key|
               klass = self.class.const_get(key.to_s.singularize.camelize)
               parse = self.cache.select{ |a| a if a.type.to_s == klass.to_s }
+              logger.debug("[DEBUG] - update_cache: Updating cache for depth level 1 assignments, processing class #{key.to_s.singularize.camelize}, #{assignments[1].select{ |a| a if a._type.to_s == klass.to_s}.count} possible records")           
               eval = self.vex_assignments[key][:through]
               if eval.is_a? Array
                 eval.each do |evaluate|
-                  check = assignments[1].select{ |a| a if a.type.to_s == klass.to_s }
+                  eval_klass = self.class.const_get(evaluate.to_s.singularize.camelize)
+                  eval_items = assignments[0].select{|a| a if a.type.to_s == eval_klass.to_s }
+                  ids = Array.new
+                  eval_items.each do |iterate|
+                    ids = (ids + iterate.assignment_ids).uniq
+                  end
+                  check = assignments[1].select{ |a| a if a.type.to_s == klass.to_s and ids.include?(a._id) }
+                  check.each do |push|
+                    inherited_ids = Array.new
+                    eval_items.select{ |a| a if a.assignment_ids.include?(push._id) }.each do |inherited|
+                      inherited_ids = (inherited_ids + [inherited._id.to_s]).uniq
+                    end
+                    cache_check = self.cache.select{ |a| a if a["id"].to_s == push._id.to_s }
+                    if cache_check.empty?
+                      inherited_ids = inherited_ids.first unless inherited_ids.count > 1
+                      self.cache.push({ "id" => push._id.to_s, "type" => push._type.to_s, "name" => push.name, "source" => inherited_ids, "dependency_only" => false })
+                    else
+                      cache_check.each do |update|
+                        if update["source"].is_a? Array
+                          inherited_ids = ( inherited_ids + update["source"]).uniq
+                        else
+                          inherited_ids = ( inherited_ids + [ update["source"] ]).uniq
+                        end
+                        inherited_ids = inherited_ids.first unless inherited_ids.count > 1
+                        update["source"] = inherited_ids
+                      end
+                    end
+                  end
                 end
               else
-                
+                eval_klass = self.class.const_get(eval.to_s.singularize.camelize)
+                eval_items = assignments[0].select{|a| a if a.type.to_s == eval_klass.to_s }
+                ids = Array.new
+                eval_items.each do |iterate|
+                  ids = (ids + iterate.assignment_ids).uniq
+                end
+                check = assignments[1].select{ |a| a if a.type.to_s == klass.to_s and ids.include?(a._id) }
+                check.each do |push|
+                  inherited_ids = Array.new
+                  eval_items.select{ |a| a if a.assignment_ids.include?(push._id) }.each do |inherited|
+                    inherited_ids = (inherited_ids + [inherited._id.to_s]).uniq
+                  end
+                  cache_check = self.cache.select{ |a| a if a["id"].to_s == push._id.to_s }
+                  if cache_check.empty?
+                    inherited_ids = inherited_ids.first unless inherited_ids.count > 1
+                    self.cache.push({ "id" => push._id.to_s, "type" => push._type.to_s, "name" => push.name, "source" => inherited_ids, "dependency_only" => false })
+                  else
+                    cache_check.each do |update|
+                      if update["source"].is_a? Array
+                        inherited_ids = ( inherited_ids + update["source"]).uniq
+                      else
+                        inherited_ids = ( inherited_ids + [ update["source"] ]).uniq
+                      end
+                      inherited_ids = inherited_ids.first unless inherited_ids.count > 1
+                      update["source"] = inherited_ids
+                    end
+                  end
+                end
               end
             end
             unless query_depth < 2
               (2..query_depth).each do |depth|
+                logger.debug("[DEBUG] - update_cache: Updating cache for depth level #{depth} assignments")
               end
             end
           end
-            
+          
+          logger.debug("[DEBUG] - update_cache: cache updated, is now #{self.cache.to_json}")  
           #cascade = self.cache.map{|a| a["id"]} - old_cache.map{|a| a["id"]}
         end
       end
