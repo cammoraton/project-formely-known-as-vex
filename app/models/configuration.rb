@@ -11,7 +11,6 @@ class Configuration
   key :description,    String
   key :data,           Hash    # The actual configuration data, absent the relationships
                                # this could easily be an embedded_document but there's not much point.
-  key :metadata,       Hash    # Data about data (including cache)
   
   key :assignment_ids, Array
   
@@ -25,11 +24,10 @@ class Configuration
   
   before_save  :downcase_name      # Help out the routes and uniqueness validation a bit
   after_save   :fixup_assignments  # Replicate has_and_belongs_to_many kinda-sorta
+  
   # We just turn on caching by default for now
   has_cache
-  
   timestamps!
-  
   
   # Pass this back as an array of key/values to make the forms a little easier  
   def parameters
@@ -119,3 +117,4 @@ class Configuration
     end
   end
 end
+
