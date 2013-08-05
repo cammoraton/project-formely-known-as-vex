@@ -26,8 +26,7 @@ class Configuration
   before_save  :downcase_name      # Help out the routes and uniqueness validation a bit
   after_save   :fixup_assignments  # Replicate has_and_belongs_to_many kinda-sorta
   # We just turn on caching by default for now
-  caches_associations
-  caches_dependencies
+  has_cache
   
   timestamps!
   
