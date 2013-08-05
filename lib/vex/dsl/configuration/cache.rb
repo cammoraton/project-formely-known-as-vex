@@ -86,7 +86,6 @@ module Vex
               inherited_ids = (inherited_ids + [ inherited["id"] ]).uniq
             end
             
-            logger.debug( "Inherited #{evaluate._id} from #{inherited_ids.to_json}")
             next if inherited_ids.empty?
             
             cache_check = self.cache.select{ |a| a if a["id"].to_s == evaluate._id.to_s }  
@@ -134,7 +133,7 @@ module Vex
           
           unless query_depth < 1
             logger.debug("[DEBUG] - update_cache: Updating cache for depth level 1 assignments")
-            self.vex_assignments.keys.each do |key|
+            self.vex_assignments.keys.select{ |a| a unless self.vex_assignments[a][:through].nil? }.each do |key|
               klass = self.class.const_get(key.to_s.singularize.camelize) 
               eval = self.vex_assignments[key][:through]
               if eval.is_a? Array
@@ -143,15 +142,32 @@ module Vex
                   parse_cache_query_results(assignments[1].select{ |a| a if a.type.to_s == klass.to_s }, 
                                             self.cache.select{ |a| a if a["type"] == eval_klass.to_s})
                 end
-              elsif !eval.nil?
+              else
                 eval_klass = self.class.const_get(eval.to_s.singularize.camelize)
                 parse_cache_query_results(assignments[1].select{ |a| a if a.type.to_s == klass.to_s }, 
                                           self.cache.select{ |a| a if a["type"] == eval_klass.to_s} )
               end
             end
             unless query_depth < 2
+              # We need to iterate through our relationships
               (2..query_depth).each do |depth|
                 logger.debug("[DEBUG] - update_cache: Updating cache for depth level #{depth} assignments")
+                self.vex_assignments.keys.select{ |a| a unless self.vex_assignments[a][:through].nil? }.each do |key|
+                  klass = self.class.const_get(key.to_s.singularize.camelize) 
+                  eval = self.vex_assignments[key][:through] 
+                  if eval.is_a? Array
+                    eval.each do |evaluate|
+                      eval_klass = self.class.const_get(evaluate.to_s.singularize.camelize)
+                      parse_cache_query_results(assignments[depth].select{ |a| a if a.type.to_s == klass.to_s }, 
+                                                self.cache.select{ |a| a if a["type"] == eval_klass.to_s})
+                    end
+                  else
+                      eval_klass = self.class.const_get(eval.to_s.singularize.camelize)
+                      parse_cache_query_results(assignments[depth].select{ |a| a if a.type.to_s == klass.to_s }, 
+                                                self.cache.select{ |a| a if a["type"] == eval_klass.to_s} )
+                    
+                  end
+                end
               end
             end
           end
