@@ -127,7 +127,7 @@ module Vex
                     end
                   end
                 end
-              else
+              elsif !eval.nil?
                 eval_klass = self.class.const_get(eval.to_s.singularize.camelize)
                 eval_items = assignments[0].select{|a| a if a.type.to_s == eval_klass.to_s }
                 ids = Array.new
@@ -166,7 +166,9 @@ module Vex
           end
           
           logger.debug("[DEBUG] - update_cache: cache updated, is now #{self.cache.to_json}")  
-          #cascade = self.cache.map{|a| a["id"]} - old_cache.map{|a| a["id"]}
+          cascade = self.cache.map{|a| a["id"]} - old_cache.map{|a| a["id"]}
+          
+          logger.debug("[DEBUG] - update_cache: new items #{cascade.to_json}")  
         end
       end
     end
