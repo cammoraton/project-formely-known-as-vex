@@ -28,7 +28,7 @@ After basics are done, there's still an awful lot of work to do on this.
 - I need to figure out how I want to do common things.  Like default roles which will include DNS/etc.  Monitoring.
 - The layouts are ok, but not great.  It looks amateurish(which it is as my skills of a designer are meh)
 - I'm still not entirely happy with the controllers or models, but I'll live.  I'm commited to this basic structure now.
-- Updating caches needs to be done better, initially optimized, and potentially eventually split off into a delayed job or something(maybe in a local sqlite db?). Right now the hit from this is a bit extreme as we're overzealous in how we cascade and that causes an ENORMOUS performance hit on save that feels really bad on the ui side.
+- Updating caches can still to be done better - potentially eventually split off into a delayed job or something(maybe in a local sqlite db?). Right now the hit from this is a bit extreme as we're overzealous in how we cascade and that causes an ENORMOUS performance hit on save that feels really bad on the ui side.
 - That means locks.  We'll need to build a list of all records we may touch, lock them with a confirmed write as a unique identifier, then do a batch update.  I should call this method child_of_pthread_mutex_lock(pthread_mutex_t).
 - Indexing and set up needs done - we don't want to beat up the db any more than we already do in order to do the arbitrary indexing/search we want on the configurations
 - Creature comforts like dashboards and dependency visualizations.  D3 is really nice for this.  There's a sunburst visualization included right now that took all of 5 minutes to set up.
