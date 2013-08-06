@@ -82,19 +82,6 @@ class Configuration
     end
   end
   
-  # Pretty basic, but should do us for now.
-  def cascade(ignore = nil)
-    self.vex_assignments.keys.select{|a| a if a.to_s != ignore }.each do |key|
-      eval = self.send(key)
-      unless eval.nil? or eval.empty?
-        eval.each do |cascade|
-          cascade.touch
-          cascade.save
-        end
-      end
-    end
-  end
-  
   # We still need to cascade this somehow
   def fixup_assignments
     # Hacks around the lack of has_and_belongs_to_many.  Significant performance hit, but only on save
@@ -104,12 +91,10 @@ class Configuration
       cache_needs_updating = true
       config.push( :assignment_ids => self._id ) 
       config.reload; config.touch; config.save
-      config.instance_eval("cascade", self.to_s.downcase.pluralize)
     end
     Configuration.where( { :$and => [{ :_id => { :$nin => self.assignment_ids }},{ :assignment_ids => { :$in => [ self._id ] }}]}).all.each do |config|
       cache_needs_updating = true
       config.pull( :assignment_ids => self._id ) 
-      config.instance_eval("cascade", self.to_s.downcase.pluralize)
       config.reload; config.touch; config.save
     end
     if cache_needs_updating
