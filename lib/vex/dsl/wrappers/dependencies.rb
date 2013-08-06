@@ -11,7 +11,6 @@ module Vex
             @object = object
           end
           
-          
           def triggered_by
             to_tree(@object.vex_associations.by_types(build_search_map("triggered_by"), true))
           end
@@ -31,6 +30,7 @@ module Vex
             return words
           end
           
+          # Humorous names in code don't obscure things at all...
           def children_of_the_array(array, source)
             retval = array.select{ |a| a if a["source"] == source or a["source"].include?(source)}.map{ |a| { "name" => a["name"],
                                                                                                               "type" => a["type"],
@@ -43,9 +43,6 @@ module Vex
           end
           
           def to_tree(array = [])
-            puts array.inspect
-            puts ""
-            
             { "name" => @object.name,
               "type" => @object._type,
               "id"   => @object._id,
