@@ -43,9 +43,7 @@ module Vex
           end
           
           private
-          # This is currently missing some dependencies for elements and nodes:
-          # element -> role -> pool -> node
-          # Because it maxes out at a depth of 2
+          # Currently maxes out at a depth of two.  Need to come up with a good way to figure this out without getting overzealous
           def calculate_query_depth
             query_depth = 0
             
