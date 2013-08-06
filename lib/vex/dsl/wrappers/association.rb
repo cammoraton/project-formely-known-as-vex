@@ -14,7 +14,7 @@ module Vex
           end
           
           def to_a
-            unless @object.has_cache?
+            unless @object.cache?
               @associations ||= run_queries
             else
               @object.cache
@@ -43,6 +43,9 @@ module Vex
           end
           
           private
+          # This is currently missing some dependencies for elements and nodes:
+          # element -> role -> pool -> node
+          # Because it maxes out at a depth of 2
           def calculate_query_depth
             query_depth = 0
             
@@ -53,6 +56,7 @@ module Vex
                 eval.each do |through|
                   unless @object.vex_assignments[through].nil? or @object.vex_assignments[through][:through].nil?
                     query_depth = 2 if query_depth < 2
+                    test = @object.vex_assignments[through][:through]
                   end
                 end
               end
