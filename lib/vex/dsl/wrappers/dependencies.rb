@@ -31,56 +31,25 @@ module Vex
             return words
           end
           
-          def find_by_id(hash, id)
-            hash.select{}
+          def children_of_the_array(array, source)
+            retval = array.select{ |a| a if a["source"] == source or a["source"].include?(source)}.map{ |a| { "name" => a["name"],
+                                                                                                              "type" => a["type"],
+                                                                                                              "id"   => a["id"],
+                                                                                                              "children" => [] } }
+            retval.each do |children|
+              children["children"] = children_of_the_array(array, children["id"])
+            end
+            return retval
           end
           
           def to_tree(array = [])
-            sourced_tree = Array.new
-            working = array.dup
-            query_depth = @object.vex_associations.query_depth
-            working.each do |object|
-              unless object["source"] != @object._id.to_s
-                sourced_tree.push({ "name"     => object["name"],
-                                    "type"     => object["type"],
-                                    "id"       => object["id"],
-                                    "children" => [] })
-                working.delete(object)
-              end
-            end
-            iterations = query_depth * 5  # Sanity/Safety check: Break out of loop after a certain number of iterations even if the queue isn't empty.
-            unless query_depth < 1
-              while !working.empty? and iterations > 0
-                iterations = iterations - 1
-                working.each do |object|
-                  if object["source"].is_a? Array
-                    find = sourced_tree.select{ |a| a if object["source"].include?(a["id"]) }
-                    unless find.empty?
-                      find.first["children"].push({ "name"     => object["name"],
-                                                    "type"     => object["type"],
-                                                    "id"       => object["id"],
-                                                    "children" => [] })
-                      object["source"].delete(find.first["id"])
-                      working.delete("object") if object["source"].empty?
-                    end
-                  else
-                    find = sourced_tree.select{ |a| a if a["id"] == object["source"] }
-                    unless find.empty?
-                      find.first["children"].push({ "name"     => object["name"],
-                                                    "type"     => object["type"],
-                                                    "id"       => object["id"],
-                                                    "children" => [] })
-                      working.delete(object)
-                    end
-                  end
-                end
-              end
-            end
+            puts array.inspect
+            puts ""
             
             { "name" => @object.name,
               "type" => @object._type,
               "id"   => @object._id,
-              "children" => sourced_tree }
+              "children" => children_of_the_array(array, @object._id.to_s) }
           end
         end
       end
