@@ -4,6 +4,8 @@ class Node < Configuration
   assigned                 :roles,    :through => :pools
   assigned                 :elements, :through => [ :roles, :pools ]
   
+  has_cache
+  
   deduplicates_on :pools
   
   has_facts

@@ -3,4 +3,6 @@ class Pool < Configuration
   assigned_and_assigned_to :services
   assigned                 :elements, :through => :roles
   assigned                 :roles
+  
+  has_cache
 end

@@ -4,6 +4,8 @@ class Role < Configuration
   assigned_to :nodes,    :through => :pools
   assigned_to :services
   
+  has_cache
+  
   has_scopes
   scoped_on [ :environment, :facts ]
   #auto_indexes_data

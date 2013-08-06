@@ -25,13 +25,11 @@ class Configuration
   before_save  :downcase_name      # Help out the routes and uniqueness validation a bit
   after_save   :fixup_assignments  # Replicate has_and_belongs_to_many kinda-sorta
   
-  # We just turn on caching by default for now
-  has_cache
-  timestamps!
+  timestamps!                      # TIMESTAMPS!
   
   # Pass this back as an array of key/values to make the forms a little easier  
   def parameters
-    # Putting this in the wrapper makes it so it is never called.
+    # Putting this in the wrapper makes it so it is never called.  Something I don't know about ruby/rails is causing this.
     retval = Array.new
     self.data.each_pair do |key,value|
       retval.push(Vex::Dsl::Wrappers::Parameters::Wrapper.new(key, value))
@@ -54,14 +52,14 @@ class Configuration
   private
   def prep_hash
     merge_hash = {}
-    associations = self.assignment_cache.dup
-    associations.keys.each do |key|
+    self.vex_assignments.keys.each do |key|
       route = self.class.const_get(key.singularize.camelize).routing_path
+      items = self.send(key).to_a
       if route.to_s != key.to_s
-        associations[route] = associations[key]
-        associations.delete(key)
+        merge_hash[route] = items
+      else
+        merge_hash[key]   = items
       end
-      merge_hash[route] = associations[route].map{ |a| a["name"] }
     end
     { :name => self.name }.merge(self.data).merge(merge_hash)
   end
@@ -82,11 +80,10 @@ class Configuration
     end
   end
   
-  # We still need to cascade this somehow
+  # We still need to cascade this somehow if there's no cache.
   def fixup_assignments
     # Hacks around the lack of has_and_belongs_to_many.  Significant performance hit, but only on save
     # which we don't really care about.
-    cache_needs_updating = false
     Configuration.where( { :$and => [{ :_id => { :$in => self.assignment_ids }},{ :assignment_ids => { :$nin => [ self._id] }}]}).all.each do |config|
       cache_needs_updating = true
       config.push( :assignment_ids => self._id ) 
@@ -96,9 +93,6 @@ class Configuration
       cache_needs_updating = true
       config.pull( :assignment_ids => self._id ) 
       config.reload; config.touch; config.save
-    end
-    if cache_needs_updating
-      self.save # Save ourselves again to update cache
     end
   end
 end

@@ -9,5 +9,6 @@ class Element < Configuration
   has_scopes
   scoped_on [ :environment, :facts ]
   
+  has_cache
   #auto_indexes_data
 end

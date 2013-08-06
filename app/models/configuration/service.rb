@@ -4,5 +4,7 @@ class Service < Configuration
   assigned                 :roles
   assigned                 :elements, :through => :roles
   
+  has_cache
+  
   has_scopes
 end
