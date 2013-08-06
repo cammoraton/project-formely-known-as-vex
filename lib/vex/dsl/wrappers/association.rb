@@ -147,12 +147,12 @@ module Vex
                 if eval.is_a? Array
                   eval.each do |evaluate|
                     eval_klass = @object.class.const_get(evaluate.to_s.singularize.camelize)
-                    parse_query(assignments[1].select{ |a| a if a.type.to_s == klass.to_s }, 
+                    parse_query(assignments[1].select{ |a| a if a._type.to_s == klass.to_s }, 
                                 @associations.select{ |a| a if a["type"] == eval_klass.to_s})
                   end
                 else
                   eval_klass = @object.class.const_get(eval.to_s.singularize.camelize)
-                  parse_query(assignments[1].select{ |a| a if a.type.to_s == klass.to_s }, 
+                  parse_query(assignments[1].select{ |a| a if a._type.to_s == klass.to_s }, 
                               @associations.select{ |a| a if a["type"] == eval_klass.to_s} )
                 end
               end
@@ -165,12 +165,12 @@ module Vex
                     if eval.is_a? Array
                       eval.each do |evaluate|
                         eval_klass = @object.class.const_get(evaluate.to_s.singularize.camelize)
-                        parse_query(assignments[depth].select{ |a| a if a.type.to_s == klass.to_s }, 
+                        parse_query(assignments[depth].select{ |a| a if a._type.to_s == klass.to_s }, 
                                     @associations.select{ |a| a if a["type"] == eval_klass.to_s})
                       end
                     else
                       eval_klass = @object.class.const_get(eval.to_s.singularize.camelize)
-                      parse_query(assignments[depth].select{ |a| a if a.type.to_s == klass.to_s }, 
+                      parse_query(assignments[depth].select{ |a| a if a._type.to_s == klass.to_s }, 
                                   @associations.select{ |a| a if a["type"] == eval_klass.to_s} )
                     
                     end
