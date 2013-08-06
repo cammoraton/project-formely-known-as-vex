@@ -5,7 +5,6 @@ module Vex
         extend ActiveSupport::Concern
       
         module ClassMethods
-          
           # The main distinction between these are if we trigger a dependency or if we are triggered
           def assigned(association_id, options = {})
             vex_dependencies["triggered_by"].push(association_id) unless vex_dependencies["triggered_by"].include?(association_id)
@@ -48,7 +47,7 @@ module Vex
               end
             
               def #{association_id.to_s}
-                @#{association_id.to_s} ||= Vex::Dsl::Wrappers::Association::Wrapper.new(self, #{association_id.to_s.singularize.camelize}, #{options.inspect})
+                @#{association_id.to_s} ||= Vex::Dsl::Wrappers::Assignment::Wrapper.new(self, #{association_id.to_s.singularize.camelize})
               end
             end_eval
           end
@@ -58,39 +57,16 @@ module Vex
           base.extend ClassMethods 
         end
         
+        def vex_associations
+          @vex_associations ||= Vex::Dsl::Wrappers::Association::Wrapper.new(self)
+        end
+        
         def vex_assignments
           self.class.vex_assignments
         end
         
         def vex_dependencies
           self.class.vex_dependencies
-        end
-        
-        def associated_via(object)
-          if object.assignment_ids.include?(self._id) or self.assignment_ids.include?(object._id)
-            return object
-          end
-          eval = object.vex_assignments[self.class.to_s.downcase.pluralize.to_sym]
-          return nil if eval.nil?
-          unless eval[:through].nil?
-            if eval[:through].is_a? Array
-              eval[:through].each do |item|
-               unless item.is_a? Hash
-                 source = self.send(item).to_a.select{ |a| a.assignment_ids.include?(object._id)}
-                 return source.first unless source.empty?
-               else
-                 source = self.send(item.keys.first).to_a.select{ |a| a.assignment_ids.include?(object._id)}
-                 return source.first unless source.empty?
-               end
-              end
-            else
-              unless !self.respond_to?(eval[:through])
-                source = self.send(eval[:through]).to_a.select{ |a| a.assignment_ids.include?(object._id)}
-                return source.first unless source.empty?
-              end
-            end
-          end
-          return nil
         end
       end
     end
