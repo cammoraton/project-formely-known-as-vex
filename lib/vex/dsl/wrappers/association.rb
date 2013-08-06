@@ -38,8 +38,12 @@ module Vex
           end
     
           # Sugar methods
-          def by_type(type)
+          def by_type(type, include_dependencies = false)
             self.to_a.select{ |a| a if a["type"].to_s == type.to_s }
+          end
+          
+          def by_types(array, include_dependencies = false)
+            self.to_a.select{ |a| a if array.include?(a["type"])}
           end
           
           private
