@@ -5,10 +5,11 @@ class Element < Configuration
   assigned_to :pools,    :through => :roles
   assigned_to :services, :through => :roles
   assigned_to :roles
+   
+  has_cache
   
   has_scopes
   scoped_on [ :environment, :facts ]
   
-  has_cache
   #auto_indexes_data
 end
