@@ -2,18 +2,15 @@ module Vex
   module Dsl
     module Wrappers
       module Parameters
-  
+        # Enables the underlying array to be treated as an array of key/value hashes
         def parameters=(val)
-          logger.debug("[DEBUG] - Parameters passed as #{val.inspect}" )
           if val.is_a? Array
-            logger.debug("[DEBUG] --- Parsing array" )
             new_hash = Hash.new
             val.each do |value|
               unless value["key"].nil? or value["value"].nil? or value["key"].length < 2 or value["value"].length < 2
                 new_hash[value["key"]] = value["value"]
               end
             end
-            logger.debug("[DEBUG] --- Setting data to #{new_hash.inspect}" )
             self.data = new_hash
           elsif val.is_a? Hash
             self.data = val
