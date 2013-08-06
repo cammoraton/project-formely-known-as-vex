@@ -39,11 +39,21 @@ module Vex
     
           # Sugar methods
           def by_type(type, include_dependencies = false)
-            self.to_a.select{ |a| a if a["type"].to_s == type.to_s }
-          end
+            unless include_dependencies
+              self.to_a.select{ |a| a if (a["type"].to_s == type.to_s and 
+                                         (a["dependency_only"].nil? or a["dependency_only"] == false)) }
+            else
+              self.to_a.select{ |a| a if a["type"].to_s == type.to_s }
+            end
+          end  
           
           def by_types(array, include_dependencies = false)
-            self.to_a.select{ |a| a if array.include?(a["type"])}
+            unless include_dependencies
+              self.to_a.select{ |a| a if (array.include?(a["type"]) and 
+                                         (a["dependency_only"].nil? or a["dependency_only"] == false))}
+            else
+              self.to_a.select{ |a| a if array.include?(a["type"]) }
+            end
           end
           
           private
@@ -72,11 +82,11 @@ module Vex
             query_interface = @object.class.const_get("Configuration")
             
             # Now construct and execute the queries
-            queries[0]  = query_interface.where(:_id => { :$in => @object.assignment_ids }).fields(:name, :_id, :_type, :assignment_ids).all
+            queries[0]  = query_interface.where(:_id => { :$in => @object.assignment_ids }).fields(:name, :_id, :_type, :assignment_ids, :cache).all
             # First level of inheritance is special
             unless self.query_depth < 1
               queries[1] = query_interface.where({ :$and => [{ :assignment_ids => {:$in => @object.assignment_ids}},
-                                                           { :_id => { :$nin => @object.assignment_ids + [ @object._id ] }}]}).fields(:name, :_id, :_type, :assignment_ids).all
+                                                           { :_id => { :$nin => @object.assignment_ids + [ @object._id ] }}]}).fields(:name, :_id, :_type, :assignment_ids, :cache).all
               # Now go through through the rest
               unless self.query_depth < 2
                 (2..self.query_depth).each do |depth|
@@ -89,7 +99,7 @@ module Vex
                     assign_ids = (assign_ids + assign.assignment_ids).uniq
                   end
                   queries[depth] = query_interface.where({ :$and => [{:assignment_ids => {:$in => assign_ids}},
-                                                                   {:_id => {:$nin => current_ids }}]}).fields(:name, :_id, :_type, :assignment_ids).all
+                                                                   {:_id => {:$nin => current_ids }}]}).fields(:name, :_id, :_type, :assignment_ids, :cache).all
                 end
               end
             end 
@@ -181,6 +191,35 @@ module Vex
                     
                     end
                   end
+                end
+              end
+            end
+            
+            # Parse in the dependencies/caches
+            # This may execute an additional series of queries if any of the target objects are not cached.
+            all_items = []
+            (0..query_depth).each do |iterate|
+              all_items = (all_items + assignments[iterate]).uniq  
+            end
+            all_items.select{ |a| a if @associations.map{|b| b["id"]}.include?(a._id.to_s)}.each do |parse|
+              if @object.vex_dependencies["triggers"].include?(parse._type.to_s.downcase.pluralize.to_sym)
+                deps = parse.vex_associations.by_types(parse.vex_dependencies["triggers"].map{|a| a.to_s.singularize.camelize}, true)
+                deps.select{ |a| a if !@associations.map{|b| b["id"]}.include?(a["id"]) and a["id"] != @object._id.to_s }.each do |dependency|
+                  @associations.push({ "id" => dependency["id"],
+                                       "type" => dependency["type"],
+                                       "name" => dependency["name"],
+                                       "source" => dependency["source"],
+                                       "dependency_only" => true})
+                end
+              end 
+              if @object.vex_dependencies["triggered_by"].include?(parse._type.to_s.downcase.pluralize.to_sym)
+                deps = parse.vex_associations.by_types(parse.vex_dependencies["triggered_by"].map{|a| a.to_s.singularize.camelize}, true)
+                deps.select{ |a| a if !@associations.map{|b| b["id"]}.include?(a["id"]) and a["id"] != @object._id.to_s }.each do |dependency|
+                  @associations.push({ "id" => dependency["id"],
+                                       "type" => dependency["type"],
+                                       "name" => dependency["name"],
+                                       "source" => dependency["source"],
+                                       "dependency_only" => true})
                 end
               end
             end

@@ -39,8 +39,8 @@ module Vex
           self.cache = self.vex_associations.reload # Force a requery
           logger.debug("[DEBUG] - update_cache: cache updated, is now #{self.cache.to_json}")  
           
-          cascade_save    = self.cache.map{|a| a["id"]} - old_cache.map{|a| a["id"]}
-          cascade_deleted = old_cache.map{|a| a["id"]} - self.cache.map{|a| a["id"]}
+          cascade_save    = self.cache.select{|a| a["id"] if (a["dependency_only"].nil? or a["dependency_only"] == false)} - old_cache.select{|a| a["id"] if (a["dependency_only"].nil? or a["dependency_only"] == false)}
+          cascade_deleted = old_cache.select{|a| a["id"] if (a["dependency_only"].nil? or a["dependency_only"] == false)} - self.cache.select{|a| a["id"] if (a["dependency_only"].nil? or a["dependency_only"] == false)}
           # Combine and remove any direct associations( fixup_assignments will take care of those)
           @cascade_pending = ((cascade_save + cascade_deleted) - 
                              self.vex_associations.to_a.select{|a| a["id"] if a["source"].to_s == self._id.to_s}).uniq

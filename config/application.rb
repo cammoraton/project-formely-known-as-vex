@@ -28,7 +28,7 @@ module Vex
     end
     
     # Development/test default to :debug, we can set it to info to get a better idea of performance metrics.
-    #config.log_level = :info
+    # config.log_level = :info
     
     # Define what our ultimate dependency resolution target is
     config.dependency_resolution_target = "Node"

@@ -11,15 +11,30 @@ module Vex
             @object = object
           end
           
+          
           def triggered_by
-            to_tree(@object.vex_associations.by_types(@object.vex_dependencies["triggered_by"].map{|a| a.to_s.singularize.camelize}, true))
+            to_tree(@object.vex_associations.by_types(build_search_map("triggered_by"), true))
           end
         
           def triggers
-            to_tree(@object.vex_associations.by_types(@object.vex_dependencies["triggers"].map{|a| a.to_s.singularize.camelize}, true))
+            to_tree(@object.vex_associations.by_types(build_search_map("triggers"), true))
           end
           
           private
+          def build_search_map(keyword)
+            raise(ArgumentError, "Keyword must be passed") if keyword.nil?
+            words = []
+            @object.vex_dependencies[keyword].map{|a| a.to_s.singularize.camelize}.each do |word|
+              words = ( words + [word] + self.class.const_get(word).vex_dependencies[keyword].map{|a| a.to_s.singularize.camelize }).uniq
+            end
+            puts words.inspect
+            return words
+          end
+          
+          def find_by_id(hash, id)
+            hash.select{}
+          end
+          
           def to_tree(array = [])
             sourced_tree = Array.new
             working = array.dup
@@ -33,8 +48,10 @@ module Vex
                 working.delete(object)
               end
             end
+            iterations = query_depth * 5  # Sanity/Safety check: Break out of loop after a certain number of iterations even if the queue isn't empty.
             unless query_depth < 1
-              (1..query_depth).each do |iterate|
+              while !working.empty? and iterations > 0
+                iterations = iterations - 1
                 working.each do |object|
                   if object["source"].is_a? Array
                     find = sourced_tree.select{ |a| a if object["source"].include?(a["id"]) }
