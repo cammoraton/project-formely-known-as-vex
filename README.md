@@ -24,18 +24,7 @@ Core Functionality remaining:
 - Navigation suuuckkks. Right now you go to: /nodes, /roles, /services, /pools, or /classes and define objects.  There's an index for each but no launch page.
 - You have to know triggers.json, triggered_by.json, index.json(IE: /nodes.json) and object.json(ie: /nodes/test.json) exist to actually do anything with it.
 
-After basics are done, there's still an awful lot of work to do on this.
-- I need to figure out how I want to do common things.  Like default roles which will include DNS/etc.  Monitoring.
-- The layouts are ok, but not great.  It looks amateurish(which it is as my skills of a designer are meh)
-- I'm still not entirely happy with the controllers or models, but I'll live.  I'm commited to this basic structure now.
-- Updating caches can still to be done better - potentially eventually split off into a delayed job or something(maybe in a local sqlite db?).
-- That means locks.  We'll need to build a list of all records we may touch, lock them with a confirmed write as a unique identifier, then do a batch update.  I should call this method child_of_pthread_mutex_lock(pthread_mutex_t).
-- Indexing and set up needs done - we don't want to beat up the db any more than we already do in order to do the arbitrary indexing/search we want on the configurations
-- Creature comforts like dashboards and dependency visualizations.  D3 is really nice for this.  There's a sunburst visualization included right now that took all of 5 minutes to set up.
-- Wrapper scripts need to be done.  Really a creature comfort but we should really follow CLI conventions if our target audience is admins.  Can not assume they know rake's little foibles.
-- Quite a few rake tasks need built out (import/export being the BIG one)
-- Accounts need to be set up - which means permissions
-- Machine accounts (ip/cert combo) need set up
+After basics are done, there's still an awful lot of work(see issues) to do on this.
 - Views(Version control)/a paper trail needs set up.  Alternatively we need to tightly couple this with VCS, so it batch exports as part of the cache update task and then does a commit as the user.  This would mean exporting the metadata though.
 - Maybe do both of those?
 - Changesets.  Want to batch these somehow.
@@ -49,6 +38,6 @@ After basics are done, there's still an awful lot of work to do on this.
 - Need to do a hiera backend.
 - Need to write agents for elasticsearch.
 - Should probably write something to parse puppet modules into elastic search at some point.
-- Need to write agents for jenkins.
+- Need to write agents for jenkins interaction.
 - Growl would be really nice for me, personally.
-- A plugin system would be aces.  That'd be a pretty significant refactor though and a lot of metaprogramming since we'd need to set up relationships dynamically if you wanted to allow people to extend models.
+- A plugin system would be aces.
