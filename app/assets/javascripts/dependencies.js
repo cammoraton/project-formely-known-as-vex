@@ -37,7 +37,7 @@ $(document).ready(function() {
         .outerRadius(function(d) { return Math.sqrt(d.y + d.dy); });
   
   d3.json(pathname + "/triggered_by.json", function(root) {  
-   var svg = sunburst_triggers.data(d3.entries(root)).selectAll("g")
+   var svg = sunburst_triggered.data(d3.entries(root)).selectAll("g")
           .data(partition.nodes(root))
         .enter().append("svg:g")
           .attr("display", function(d) { return d.depth ? null : "none"; }); // hide inner ring
