@@ -25,11 +25,11 @@ module Vex
           retval = Array.new
           val.each_pair do |key, value|
             if value.is_a? Hash
-              retval.push({"key" => key, "parameters" => params_to_array(value) })
+              retval.push(Vex::Dsl::Wrappers::Parameters::Wrapper.new(key, nil, params_to_array(value)))
             elsif value.is_a? Array
-              retval.push({"key" => key, "value" => value})
+              retval.push(Vex::Dsl::Wrappers::Parameters::Wrapper.new(key, value, nil))
             else
-              retval.push({"key" => key, "value" => value})
+              retval.push(Vex::Dsl::Wrappers::Parameters::Wrapper.new(key, value, nil))
             end  
           end
           return retval
@@ -42,7 +42,7 @@ module Vex
             unless value["key"].nil? or value["key"].length < 2
               if !value["parameters"].nil?
                 retval[value["key"]] = array_to_params(value["parameters"])
-              elsif value["value"].nil? and value["value"].length > 2
+              elsif !value["value"].nil? and value["value"].length > 2
                 retval[value["key"]] = value["value"]
               end
             end
@@ -51,15 +51,22 @@ module Vex
         end
         
         class Wrapper
-          def initialize(key,value)
+          def initialize(key, value, parameters)
             @key = key            
             @value = value
+            @parameters = parameters
           end
+          
           def key
             @key
           end
+          
           def value
             @value
+          end
+          
+          def parameters
+            @parameters
           end
         end
       end
