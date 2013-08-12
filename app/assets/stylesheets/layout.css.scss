@@ -120,7 +120,20 @@ th { @include box-shadow( 0, 0, 1px, #000000); font-weight: bold; color: #ffffff
     text-align: center;
   }
 }
+
 #associations table {
   min-width: 30em;
   margin-left: 1em;
+}
+
+#parameters {
+  p.parameter { display: block; padding: 0.2em; margin: 0em; padding-left: 0em; padding-right: 1em; }
+  span.key {  }
+  span.value { }
+  span.actions { 
+    display: inline-block; 
+    a.remove { width: 1em; height: 1em; overflow: auto; }
+    a.hash   { width: 1em; height: 1em; overflow: auto; }
+  }
+  span.context_action { margin-left: -1em; margin: 0em; width: 1em; display: inline-block; }
 }

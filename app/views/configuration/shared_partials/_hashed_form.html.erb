@@ -1,11 +1,11 @@
-<div id="parameters" class="indent">
+<div id="parameters" class="parameter_container">
 <%= render :partial => 'configuration/shared_partials/parameter_fields', 
            :collection => @object.parameters.select{ |a| a if a.parameters.nil? or a.parameters.empty? }, 
            :locals => { :form => "#{form_name}[parameters]" } %>
-<div class="nested_parameters">
+<div class="nested_parameter">
 <%= render :partial => 'configuration/shared_partials/parameter_fields', 
            :collection => @object.parameters.select{ |a| a unless a.parameters.nil? or a.parameters.empty? }, 
            :locals => { :form => "#{form_name}[parameters]" } %>
 </div>
-<%= link_to_function "Add parameter", "", :class => "add_parameter", :field_name => "#{form_name}[parameters]" %>
+<%= link_to_function "Add parameter", "AddParameter(this);", :field_name => "#{form_name}[parameters]" %>
 </div>
