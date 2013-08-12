@@ -3,15 +3,15 @@ $(document).ready(function() {
       diameter = 450;
   
   var pool = d3.scale.ordinal()
-  	      .range(["#efedf5","#bcbddc","#756bb1"]),
+  	      .range(["#bcbddc"]),
   	  node = d3.scale.ordinal()
-  	      .range(["#deebf7","#9ecae1","#3182bd"]),
+  	      .range(["#9ecae1"]),
   	  service = d3.scale.ordinal()
-  	      .range(["#fee0d2","#fc9272","#de2d26"]),
+  	      .range(["#fc9272"]),
   	  element = d3.scale.ordinal()
-  	      .range(["#e5f5e0","#a1d99b","#31a354"]),
+  	      .range(["#a1d99b"]),
   	  role = d3.scale.ordinal()
-  	      .range(["#fee6ce","#fdae6b","#e6550d"]),
+  	      .range(["#fdae6b"]),
   	  greys = d3.scale.ordinal()
   	      .range(["#ffffff","#f0f0f0","#d9d9d9","#bdbdbd","#969696","#737373","#525252","#252525","#000000"]);
   	      
