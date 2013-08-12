@@ -32,8 +32,7 @@
   <div id="configuration">
     <h1>Parameters</h1>
     <div class="indent">
-      <code><%= @object.data.to_json %></code>
-      <%= render :partial => "configuration/shared_partials/hashed", :locals => { :item => @object.parameters } %>
+      <%= render :partial => "configuration/shared_partials/hashed", :locals => { :hash => @object.data } %>
     </div>
     <div id="associations">
       <%= render :partial => "#{params[:controller]}/#{params[:type].pluralize}/associations" rescue nil %>

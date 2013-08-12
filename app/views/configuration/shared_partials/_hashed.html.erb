@@ -1,0 +1,22 @@
+<% hash.each_pair do |key, value| 
+     unless value.is_a? Hash -%>
+<div class="indent parameter_box">
+  <p>
+  	<span class="key"><%= key %></span> 
+  	<span class="value"><%= value %></span>
+  </p>
+</div>
+<%   end
+   end 
+   hash.each_pair do |key, value| 
+    if value.is_a? Hash -%>
+<div class="indent parameter_box">
+  <p>
+  	<span class="key">
+  	  <%= key %>
+  	</span>
+  </p>
+  <%= render :partial => "configuration/shared_partials/hashed", :locals => { :hash => value } %>
+</div>
+<%   end
+   end -%>
