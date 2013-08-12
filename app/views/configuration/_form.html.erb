@@ -10,9 +10,7 @@
     <%= f.text_area :description, :rows => 4, :cols => 100 %>
   </div>
   <h1>Parameters</h1>
-  <div class="indent">
-    <%= render :partial => "configuration/shared_partials/hashed_form", :locals => { :form_name => "#{vex_class.to_s.downcase}"} %>
-  </div>
+  <%= render :partial => "configuration/shared_partials/hashed_form", :locals => { :form_name => "#{vex_class.to_s.downcase}"} %>
   <div class="box">
     <%= render :partial => "configuration/#{params[:type].to_s.downcase.pluralize}/associations_form", :locals => { :f => f }  rescue nil %>
   </div>
