@@ -119,6 +119,8 @@ th { @include box-shadow( 0, 0, 1px, #000000); font-weight: bold; color: #ffffff
     color: #505050;
     text-align: center;
   }
+  
+  textarea { border: 0px; background: #FBFBFB; padding: 0.2em; @include rounded(4px); @include box-shadow( 0, 0, 2px, #444444); }
 }
 
 #associations table {
@@ -131,9 +133,41 @@ th { @include box-shadow( 0, 0, 1px, #000000); font-weight: bold; color: #ffffff
   span.key {  }
   span.value { }
   span.actions { 
-    display: inline-block; 
-    a.remove { width: 1em; height: 1em; overflow: auto; }
-    a.hash   { width: 1em; height: 1em; overflow: auto; }
+    display: none; 
+    a, a:hover { 
+      display: inline-block;
+      @include rounded(8px); 
+      
+      width: 16px; 
+      height: 16px; 
+      overflow: hidden; 
+      color: transparent; 
+      font-size: 1; 
+    }
+    a { 
+      background: #000000; 
+      @include box-shadow( 0, 0, 2px, #000000);
+      background-image:url(image-path("ui-icons_bbbbbb_256x240.png")); 
+    }
+    a:hover { 
+      background: #000000;
+      @include box-shadow( 0, 0, 4px, #ED8A3F);
+      background-image:url(image-path("ui-icons_ED8A3F_256x240.png")); 
+    }
+    
+    a.remove { background-position: -32px 48px; }
+    a.hash   { background-position: -32px 176px; }
+    a.unhash { background-position: 0px 176px; }
   }
-  span.context_action { margin-left: -1em; margin: 0em; width: 1em; display: inline-block; }
+  
+  span.context_action { 
+    margin-left: -1em; 
+    margin: 0em;
+    width: 1em;
+    height: 1em;
+    overflow: none;
+    display: inline-block;
+  }
+  
+  input[type="text"] { border: 0px; background: #FBFBFB; padding: 0.2em; @include rounded(2px); @include box-shadow( 0, 0, 2px, #444444); }
 }

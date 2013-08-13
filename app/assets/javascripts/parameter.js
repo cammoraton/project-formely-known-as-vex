@@ -1,13 +1,12 @@
 function AddParameter(object) {
-  var ParameterTemplate = "<p class=\"parameter\"> " +
-                          "  <span class=\"context_action\"></span>" + 
+  var ParameterTemplate = "<div class='hover_target'><p class=\"parameter\"> " +
                           "  <span class=\"key\"><input id='#{scored_field}_key' name='#{field}[][key]' size='#{size}' type='text' value=''/></span> " +
                           "  <span class=\"value\"><input id='#{scored_field}_value' name='#{field}[][value]' size='#{size}'/></span> " +
                           "  <span class=\"actions\">" +
                           "    <a class='hash' href='#' onclick=\"HashParameter(this); return false;\">Convert to Hash</a>" +
                           "    <a class='remove' href='#' onclick=\"$(this).parents('.parameter').remove(); return false;\">Remove</a>" +
                           "  </span>" +
-                          "</p>";
+                          "</p></div>";
   var field        = $(object).attr('field_name'),
       size         = $(object).attr('size') || '30';
   var scored_field = field.replace(/[\[|\]]/g, '_');
@@ -21,14 +20,13 @@ function AddParameter(object) {
 }
 
 function HashParameter(object) {
-  var NestedParameterTemplate = "<p class=\"parameter\">" +
-                                "  <span class=\"context_action active\"> </span>" +
+  var NestedParameterTemplate = "<div class='hover_target'><p class=\"parameter\">" +
                                 "  <span class=\"key\"><input id='#{scored_field}_key' name='#{field}[][key]' type='text' value='#{key}'/></span>" +
                                 "  <span class='actions'>" +
                                 "    <a class='unhash' href='#' onclick=\"UnHashParameter(this); return false;\">Unhash</a>" +
                                 "    <a class='remove' href='#' onclick=\"$(this).parents('.parameter').next('.parameter_container').remove(); $(this).parents('.parameter').remove(); return false;\">Remove</a>" +
                                 "  </span>" +
-                                "</p>" +
+                                "</p></div>" +
                                 "<div class=\"indent parameter_container\">" +
                                 "  <div class=\"nested_parameter\">" +
                                 "  </div>" +
@@ -48,14 +46,13 @@ function HashParameter(object) {
 }
 
 function UnHashParameter(object) {
-  var ParameterTemplate = "<p class=\"parameter\"> " +
-                          "  <span class=\"context_action\"></span>" + 
-                          "  <span class=\"key\"><input id='#{scored_field}_key' name='#{field}[][key]' size='#{size}' type='text' value='#{value}'/></span> " +
-                          "  <span class=\"value\"><input id='#{scored_field}_value' name='#{field}[][value]' size='#{size}'/></span> " +
-                          "  <span class=\"actions\">" +
-                          "    <a class='hash' href='#' onclick=\"HashParameter(this); return false;\">Convert to Hash</a>" +
-                          "    <a class='remove' href='#' onclick=\"$(this).parents('.parameter').remove(); return false;\">Remove</a>" +
-                          "  </span>" +
-                          "</p>";	
-  
+  return false;
 }
+
+$(function(){
+  $('.hover_target').hover(function(){
+	$(this).children('.parameter').children("span.action").show();
+  },function(){ 
+    $(this).children('.parameter').children("span.action").hide();
+  });
+});

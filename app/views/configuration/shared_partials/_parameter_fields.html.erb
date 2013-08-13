@@ -1,23 +1,24 @@
 <%= fields_for form, parameter_fields, :index => nil do |f| %>
+<div class="hover_target">
 <% if f.object.parameters.nil? or f.object.parameters.empty? -%>
   <p class="parameter">
-  	<span class="context_action"></span>
   	<span class="key"><%= f.text_field :key, :disabled => true %><%= f.hidden_field :key %></span>
   	<span class="value"><%= f.text_field :value %></span>
   	<span class="actions">
-  	  <%= link_to_function "Change to Hash", "HashParameter(this); return false;", :class => "hash" %>
+  	  <%= link_to_function "Hash", "HashParameter(this)", :class => "hash" %>
       <%= link_to_function "Delete", "$(this).parents('.parameter').remove()", :class => "remove" %>
     </span>
   </p>
+  </div>
 <% else -%>
   <p class="parameter">
-  	<span class="context_action active"> </span>
   	<span class="key"><%= f.text_field :key, :disabled => true %><%= f.hidden_field :key %></span>
   	<span class="actions">
-  	  <%= link_to_function "Change to Hash", "HashParameter(this); return false;", :class => "hash" %>
-      <%= link_to_function "Delete", "$(this).parents('.parameter').remove()", :class => "remove" %>
+  	  <%= link_to_function "Unhash", "UnHashParameter(this)", :class => "unhash" %>
+      <%= link_to_function "Delete", "$(this).parents('.parameter').next('.parameter_container').remove(); $(this).parents('.parameter').remove()", :class => "remove" %>
     </span>
  </p>
+ </div>
  <div class="indent parameter_container">
    <%= render :partial => 'configuration/shared_partials/parameter_fields', 
               :collection => f.object.parameters.select{ |a| a if a.parameters.nil? or a.parameters.empty? }, 
@@ -27,7 +28,7 @@
               :collection => f.object.parameters.select{ |a| a unless a.parameters.nil? or a.parameters.empty? }, 
               :locals => { :form => "#{form}[][parameters]" } %>
    </div>
-   <%= link_to_function "Add parameter", "AddParameter(this);", :field_name => "#{form}[][parameters]" %>
+   <%= link_to_function "Add parameter", "AddParameter(this);", :field_name => "#{form}[][parameters]", :class => "button" %>
  </div>
 <% end -%>
 <% end -%>

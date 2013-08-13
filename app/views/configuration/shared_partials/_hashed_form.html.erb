@@ -1,4 +1,4 @@
-<div id="parameters" class="parameter_container">
+<div id="parameters" class="parameter_container indent">
 <%= render :partial => 'configuration/shared_partials/parameter_fields', 
            :collection => @object.parameters.select{ |a| a if a.parameters.nil? or a.parameters.empty? }, 
            :locals => { :form => "#{form_name}[parameters]" } %>
