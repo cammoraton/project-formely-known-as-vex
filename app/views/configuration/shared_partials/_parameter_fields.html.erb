@@ -1,5 +1,4 @@
 <%= fields_for form, parameter_fields, :index => nil do |f| %>
-<div class="hover_target">
 <% if f.object.parameters.nil? or f.object.parameters.empty? -%>
   <p class="parameter">
   	<span class="key"><%= f.text_field :key, :disabled => true %><%= f.hidden_field :key %></span>
@@ -9,7 +8,6 @@
       <%= link_to_function "Delete", "$(this).parents('.parameter').remove()", :class => "remove" %>
     </span>
   </p>
-  </div>
 <% else -%>
   <p class="parameter">
   	<span class="key"><%= f.text_field :key, :disabled => true %><%= f.hidden_field :key %></span>
@@ -18,7 +16,6 @@
       <%= link_to_function "Delete", "$(this).parents('.parameter').next('.parameter_container').remove(); $(this).parents('.parameter').remove()", :class => "remove" %>
     </span>
  </p>
- </div>
  <div class="indent parameter_container">
    <%= render :partial => 'configuration/shared_partials/parameter_fields', 
               :collection => f.object.parameters.select{ |a| a if a.parameters.nil? or a.parameters.empty? }, 

@@ -133,7 +133,7 @@ th { @include box-shadow( 0, 0, 1px, #000000); font-weight: bold; color: #ffffff
   span.key {  }
   span.value { }
   span.actions { 
-    display: none; 
+    display: inline-block;
     a, a:hover { 
       display: inline-block;
       @include rounded(8px); 
@@ -168,6 +168,6 @@ th { @include box-shadow( 0, 0, 1px, #000000); font-weight: bold; color: #ffffff
     overflow: none;
     display: inline-block;
   }
-  
+  .hover_target { padding: 0.1em; }
   input[type="text"] { border: 0px; background: #FBFBFB; padding: 0.2em; @include rounded(2px); @include box-shadow( 0, 0, 2px, #444444); }
 }
