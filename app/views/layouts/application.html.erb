@@ -30,6 +30,13 @@
 <%= yield :main %>
   <nav id="sidebar" class="sidebar">
   	<%= yield :sidebar %>
+  	<ul>
+  	  <li><a href="/nodes">Nodes</a></li>
+  	  <li><a href="/classes">Classes</a></li>
+  	  <li><a href="/services">Services</a></li>
+  	  <li><a href="/pools">Pools</a></li>
+  	  <li><a href="/roles">Roles</a></li>
+  	</ul>
   </nav>
   <nav id="breadcrumbs" class="breadcrumbs">
   	<%= yield :breadcrumbs %>
