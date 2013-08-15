@@ -50,10 +50,10 @@ namespace :yaml do
   end
   namespace :import do
     def actual_import(path, klass)
+      puts "Parsing #{path}"
       return nil if FileTest::directory?(path)
       return nil unless FileTest::exist?(path)
-      working = YAML::load(File.open(path))
-      puts working.inspect
+      working = YAML::load(File.open(path, "r"))
       check = klass.find_by_name(working["name"])
       if check.nil?
         check = klass.new(:name => working["name"])
@@ -66,7 +66,13 @@ namespace :yaml do
           ids = Array.new
           working[working_key].each do |item|
             find = assign_klass.find_by_name(item)
-            ids.push(find) unless find.nil?
+            unless find.nil?
+              if check.send(key).ids.include?(find._id.to_s)
+                ids.push(find) if check.send(key).local_ids.include?(find._id.to_s)
+              else
+                ids.push(find)
+              end
+            end
           end
           check.send(key).ids = ids.uniq.map {|a| a._id.to_s }
           working.delete(key)
@@ -81,9 +87,9 @@ namespace :yaml do
       Dir.foreach(path) do |item|
         next if item == '.' or item == '..'
         if FileTest::directory?(item)
-          parse_dir(item, klass)
+          parse_dir("#{path}/#{item}", klass)
         else
-          actual_import(item, klass)
+          actual_import("#{path}/#{item}", klass)
         end
       end  
     end
