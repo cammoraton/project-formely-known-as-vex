@@ -8,14 +8,16 @@ namespace :yaml do
   desc "Export everything to specified directory"
   task :export => [ :environment, "yaml:instance_variables"] do
     Dir::mkdir(@vex_export_directory) unless FileTest::directory?(@vex_export_directory)
-      Vex::Application.config.dynamic_models.each do |type|
+    Vex::Application.config.dynamic_models.each do |type|
       Rake::Task["yaml:export:#{type.to_s.pluralize}"].invoke
     end
   end
   
   desc "Import everything from the specified directory"
   task :import => [ :environment, "yaml:instance_variables"] do
-    
+    Vex::Application.config.dynamic_models.each do |type|
+      Rake::Task["yaml:import:#{type.to_s.pluralize}"].invoke
+    end
   end
   
   namespace :export do
@@ -48,7 +50,6 @@ namespace :yaml do
   end
   namespace :import do
     def actual_import(path, klass)
-      puts "Parsing #{path}"
       return nil if FileTest::directory?(path)
       return nil unless FileTest::exist?(path)
       working = YAML::load(File.open(path))
