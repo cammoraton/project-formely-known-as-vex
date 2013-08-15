@@ -1,43 +1,35 @@
-vex
+What?
 ===
 
-Vex is a dependency resolution system and pseudo-DSL for same built on Rails. I started writing it following a talk I gave at a BBLisa meeting in July of 2013 about 
-Infrastructure Continious Integration(slides in the doc dir) and functions as both a Puppet external node classifier and a hiera backend.  The goal is to be able to define relationships
-between configuration data in order to determine what endpoint servers need to be built out via jenkins in vagrant and what delta change needs to be tested.
+Vex is a combination of dashboard, external node classifier and hiera backend for puppet CM ecosystems.  It was written to address deficiencies in existing projects when it comes to dependency resolution beyond the class -> node link and follows a talk I gave at Back Bay LISA in June of 2013 on Infrastructure CI.
 
-Licensed under the MIT License for now, check the LICENSE file.
+Why?
+===
+
+Servers don't live in isolation.  Services(from the userland perspective) can and do span multiple servers or even pools of servers.  Without tracking those links if we want to test our configuration changes we need to either make dangerous assumptions or build out everything.
+
+How?
+===
+
+The core of Vex is a DSL-esque syntax that enables arbitrary definitions of relationships between various configurations.  It utilizes MongoDB to store configurations composed of arbitrary serialized data and the relationships between them.
 
 Installation:
-- It's a rails app.  Edit mongo.yml, fire up the mongo instance you set up there.  Run bundle install.  Point passenger at it or run script/rails server.
-- Oh and run rake db:mongo:index in the root directory to set up the indexes.
+- Get a mongo instance up and running.  For testing/development this is a simple as installing the package(.deb and .rpm are both available) and then running a start on the init script.
+- Get a basic ruby kit up.  Install rubygems and then do a gem install bundler.  Vex was built to work on 1.8.7 systems so as not to exclude RHEL/CentOS and older Debian distrubitions.
+- Git clone or download this repository into a location.
+- Go to where this was downloaded, run bundle install.
+- Configure config/mongo.yml if you secured mongo.
+- script/rails server, or configure passenger.
 
-Using mongo as all we're basically doing is adding relationships to serialized data, a document-based nosql database is perfect for this.  Should be able to easily scale it horizontally to ridiculous levels.
+A complete installation guide with integration examples should be available at some point.
 
-We're optimizing towards read performance.  If there's a way to make a trade-off that improves read but beats up saving, I'll be making that trade-off.
-One big example of this is updating associations and dependency caches, rather than generating them dynamically.  This gets retrieval of the end object down to a
-single query(microseconds on my laptop with a few thousand objects of test data) but makes saves take up into the seconds(since our caching needs refactored in the worst way).
+Caveats and Compromises
+===
 
-Currently vex is very, very raw.
+Vex is currently quite raw.
 
-Core Functionality remaining:
-- YAML import/export.
-- Navigation suuuckkks. Right now you go to: /nodes, /roles, /services, /pools, or /classes and define objects.  There's an index for each but no launch page.
-- You have to know triggers.json, triggered_by.json, index.json(IE: /nodes.json) and object.json(ie: /nodes/test.json) exist to actually do anything with it.
+The default configuration types and relationships follow the slides in the doc directory.  A problem with this is that the level of nested relationships can require a logarithmic growth relationship for actual queries, so to optimize for read, the default set up caches relationships inside the model.  This sacrifices save performance for read.
 
-After basics are done, there's still an awful lot of work(see issues) to do on this.
-- Views(Version control)/a paper trail needs set up.  Alternatively we need to tightly couple this with VCS, so it batch exports as part of the cache update task and then does a commit as the user.  This would mean exporting the metadata though.
-- Maybe do both of those?
-- Changesets.  Want to batch these somehow.
-- Reporting.  We need to be able to recieve reports(and artifacts) from BOTH puppet and jenkins
-- Puppet Facts.  These would be nice for the dashboards.  Being able to arbitrarily assign them(so this can act as a fact source) would be nice too.
-- A metric ton of commenting and tests need re-re-done.
-- Once we've done all of that we may as well do mcollective integration.
-- Should package it and any dependencies for debian/rhel based systems.  This needs to be EASY to install.  That also means packaging things like elasticsearch if we go that route.
-- Optimize, optimize, optimize.
-- Need to do examples for jenkins.
-- Need to do a hiera backend.
-- Need to write agents for elasticsearch.
-- Should probably write something to parse puppet modules into elastic search at some point.
-- Need to write agents for jenkins interaction.
-- Growl would be really nice for me, personally.
-- A plugin system would be aces.
+Roadmap
+===
+A lot of extra functionality is planned.  Much of this will be found inside issues attached to this github repository.
