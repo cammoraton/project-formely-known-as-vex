@@ -47,8 +47,57 @@ namespace :yaml do
     end
   end
   namespace :import do
+    def actual_import(path, klass)
+      puts "Parsing #{path}"
+      return nil if FileTest::directory?(path)
+      return nil unless FileTest::exist?(path)
+      working = YAML::load(File.open(path))
+      puts working.inspect
+      check = klass.find_by_name(working["name"])
+      if check.nil?
+        check = klass.new(:name => working["name"])
+      end
+      working.delete("name")
+      klass.vex_assignments.keys.each do |key|
+        assign_klass = self.class.const_get(key.to_s.singularize.camelize)
+        working_key = assign_klass.routing_path
+        unless working[working_key].nil? or working[working_key].empty?
+          ids = Array.new
+          working[working_key].each do |item|
+            find = assign_klass.find_by_name(item)
+            ids.push(find) unless find.nil?
+          end
+          check.send(key).ids = ids.uniq.map {|a| a._id.to_s }
+          working.delete(key)
+        end
+      end
+      check.parameters = working
+      check.save
+    end
+    
+    def parse_dir(path, klass)
+      return unless FileTest::directory?(path)
+      Dir.foreach(path) do |item|
+        next if item == '.' or item == '..'
+        if FileTest::directory?(item)
+          parse_dir(item, klass)
+        else
+          actual_import(item, klass)
+        end
+      end  
+    end
+    
+    # There has to be a better way of doing this
     Dir["#{Rails.root}/app/models/configuration/*.rb"].map{ |a| File.basename(a, ".rb") }.each do |type|
+      desc "Import the specified file as a #{type}"
+      task type.to_s.singularize.to_sym => [ :environment, "yaml:instance_variables"] do
+        actual_import(@vex_importexport_target, self.class.const_get(type.to_s.singularize.camelize))
+      end
       
+      desc "Import all files in the specified directory as #{type.to_s.pluralize}"
+      task type.to_s.pluralize.to_sym => [ :environment, "yaml:instance_variables"] do
+        parse_dir("#{@vex_import_directory}/#{type.pluralize}", self.class.const_get(type.to_s.singularize.camelize))
+      end
     end
   end
 end

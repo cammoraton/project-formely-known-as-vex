@@ -25,6 +25,10 @@ module Vex
                                                                             # don't understand is going on here.
           end
           
+          def names
+            self.to_a.map{ |a| a["name"] }
+          end
+          
           def local
             self.to_a.select{|a| a if a["source"].to_s == @object._id.to_s }
           end

@@ -41,7 +41,8 @@ class Configuration
   end
   
   def to_yaml
-    prep_hash.to_yaml
+    # Cheap hack to strip out serialization artifacts
+    JSON.parse(prep_hash.to_json).to_yaml
   end
   
   private
