@@ -3,6 +3,8 @@ What?
 
 Vex is a combination of dashboard, external node classifier and hiera backend for the puppet CM ecosystems.  It was written to address deficiencies in existing projects when it comes to dependency resolution beyond the class -> node link and follows a talk I gave at Back Bay LISA in June of 2013 on Infrastructure CI.
 
+It also serves a more conventional HCI into configuration data, at least compared to YAML.
+
 Why?
 ===
 
