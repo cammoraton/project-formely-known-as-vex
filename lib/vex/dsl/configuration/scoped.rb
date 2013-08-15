@@ -15,7 +15,7 @@ module Vex
           
           def has_scopes
             @vex_scoped = true
-            many :embedded_configurations
+            #many :scopes
           end
           
           def scoped_on(values)
