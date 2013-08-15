@@ -25,6 +25,11 @@ module Vex
                                                                             # don't understand is going on here.
           end
           
+         
+          def ids
+            self.to_a.map{ |a| a["id"] }
+          end
+          
           def names
             self.to_a.map{ |a| a["name"] }
           end
@@ -33,6 +38,10 @@ module Vex
             self.to_a.select{|a| a if a["source"].to_s == @object._id.to_s }
           end
           
+          def local_ids
+            self.local.map{ |a| a["id"] }
+          end
+           
           def source(id)
             inherited_object = self.to_a.select{|a| a if a["id"] == id }   # Find the damn thing!
             return nil if inherited_object.nil? or inherited_object.empty? # This should never happen unless we get a bad id
