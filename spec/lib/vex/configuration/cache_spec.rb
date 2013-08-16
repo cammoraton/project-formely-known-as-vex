@@ -27,18 +27,22 @@ describe Vex::Dsl::Configuration::Cache do
     end
   end
   
-  it "should default vex_cached to false" do
-    CacheTestNone.vex_cached.should be_false
-  end 
+  describe "#ClassMethods" do
+    describe "#vex_cached" do
+      it "should default vex_cached to false" do
+        CacheTestNone.vex_cached.should be_false
+      end 
   
-  it "should set vex_cached to true if has_cache invoked" do
-    CacheTestA.vex_cached.should be_true
+      it "should set vex_cached to true if has_cache invoked" do
+        CacheTestA.vex_cached.should be_true
+      end
+    end
   end
   
-  it "should see vex_cached correctly through the instance-level method" do
-    CacheTestNone.new.has_cache?().should be_false
-    CacheTestA.new.has_cache?().should be_true
+  describe "#has_cache?" do
+    it "should have the same value as the ClassMethod #vex_cached" do
+      CacheTestNone.new.has_cache?().should be_false
+      CacheTestA.new.has_cache?().should be_true
+    end
   end
-  
-  
 end
