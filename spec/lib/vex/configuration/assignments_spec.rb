@@ -71,16 +71,4 @@ describe Vex::Dsl::Configuration::Assignments do
       AssignmentTestSingularD.new.send("assignment_test_singular_c").is_a?(Vex::Dsl::Wrappers::Assignment::Wrapper).should be_true
     end
   end
-  
-  context "when a nested relationship is defined" do
-    before :all do
-      class AssignmentTestNestedA < Configuration
-        
-      end
-      
-      class AssignmentTestNestedB < Configuration
-        
-      end
-    end
-  end
 end
