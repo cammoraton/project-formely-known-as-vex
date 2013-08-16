@@ -1,0 +1,58 @@
+cache_associations: true
+elements:
+  routed_as: classes
+  scopes:
+  - environment
+  - osfamily
+  assigned_to:
+    - nodes:
+      - pools
+      - roles
+    - pools:
+      - roles
+    - services:
+      - roles
+    - roles
+nodes:
+  facts: true
+  hiera: true
+  assigned_and_assigned_to:
+  - pools
+  - services:
+    - pools
+  assigned:
+  - elements:
+    - pools
+    - roles
+  - roles:
+    - pools
+pools:
+  assigned_and_assigned_to:
+  - nodes
+  - services
+  assigned:
+  - elements:
+    - roles
+  - roles
+roles:
+  scopes:
+  - environment
+  - osfamily
+  assigned_to:
+  - pools
+  - services
+  - nodes:
+    - pools
+  assigned:
+  - elements
+services:
+  scopes:
+    - classes
+  assigned_and_assigned_to:
+  - pools
+  - nodes:
+    - pools
+  assigned:
+  - roles
+  - elements:
+    - roles
