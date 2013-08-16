@@ -6,6 +6,7 @@ gem 'mongo_mapper'
 gem 'bson_ext'
 
 # Add in ElasticSearch
+# Add in PuppetDB if it ever becomes a gem
 
 # Hiera is the target.  So we include it.
 gem 'hiera'
