@@ -1,3 +1,5 @@
+require 'spec_helper'
+
 describe Vex::Dsl::Wrappers::Dependencies do
   before :all do
     
