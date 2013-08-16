@@ -14,7 +14,7 @@ module Vex
           end
           
           def to_a
-            unless @object.cache?
+            unless @object.has_cache?
               @associations ||= run_queries
             else
               @object.cache

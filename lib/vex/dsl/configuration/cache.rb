@@ -38,7 +38,7 @@ module Vex
           @cascaded = val
         end
         
-        def cache?
+        def has_cache?
           self.class.vex_cached
         end
         
