@@ -23,6 +23,7 @@ app = Rake.application
 app.init
 app.load_rakefile
 
+# Set our environment variables
 ENV["VEX_EXPORT_DIRECTORY"] = opts[:directory]
 ENV["VEX_IMPORTEXPORT_TARGET"] = opts[:item]
 ENV["RAILS_ENV"] = opts[:environment]
@@ -32,6 +33,11 @@ if opts[:index]
 end
 
 if opts[:import]
+  unless opts[:type] or opts[:item]
+    app['yaml:import'].invoke
+  else
+    app["yaml:import:#{opts[:type]}"].invoke
+  end
 end
 
 if opts[:export]
