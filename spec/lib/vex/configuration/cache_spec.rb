@@ -6,6 +6,7 @@ describe Vex::Dsl::Configuration::Cache do
       assigned_to :cache_test_b
        
       has_cache
+      # Access the private method via a public one for testing
       def update_cache_accessor
         update_cache
       end 
@@ -15,6 +16,7 @@ describe Vex::Dsl::Configuration::Cache do
       assigned :cache_test_b
        
       has_cache
+      # Access the private method via a public one for testing
       def update_cache_accessor
         update_cache
       end 
@@ -32,5 +34,11 @@ describe Vex::Dsl::Configuration::Cache do
   it "should set vex_cached to true if has_cache invoked" do
     CacheTestA.vex_cached.should be_true
   end
+  
+  it "should see vex_cached correctly through the instance-level method" do
+    CacheTestNone.new.has_cache?().should be_false
+    CacheTestA.new.has_cache?().should be_true
+  end
+  
   
 end
