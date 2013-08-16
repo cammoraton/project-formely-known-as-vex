@@ -59,6 +59,7 @@ describe Vex::Dsl::Configuration::Cache do
   end
   
   describe "#update_cache" do
+    # Make rspec whine for now.
     it "should have tests"
   end
 end
