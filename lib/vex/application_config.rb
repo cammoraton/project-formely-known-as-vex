@@ -29,6 +29,7 @@ module Vex
       lines = Array.new
       file = File.open(@filename, "r")
       file.each_line do |line|
+        line.gsub!(/#.*$/, '') # Clear out any comments
         if line.match(/\[.*\]/)
           delegate(block_header, lines) unless block_header.nil?
           block_header = line.strip.chomp.gsub(/[\[|\]]/, '')
