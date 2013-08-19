@@ -1,3 +1,4 @@
+Dir[File.dirname(__FILE__) + '/dsl/*.rb'].each {|file| require file }
 Dir[File.dirname(__FILE__) + '/parser/*.rb'].each {|file| require file }
 
 module Vex
@@ -12,9 +13,14 @@ module Vex
     
     def load
       parse_file
+      
+      # Now create any dynamic models
       @models.each do |model|
-        #object.execute
+        create_class(model.name, model.config, Vex::Application.config.dynamic_model_base_class)
       end
+      
+      # Map in dynamic models
+      Vex::Application.config.dynamic_models = @models.map{ |a| a.name }
     end
     
     private

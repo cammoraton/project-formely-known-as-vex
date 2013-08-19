@@ -15,8 +15,14 @@ module Vex
         raise(ArgumentError, "Must pass configuration as a hash") unless config.is_a? Hash
         raise(ArgumentError, "Base class must be a class") unless base_class.class.is_a? Class
         
-        const = const.singularize.camelize
-        raise(ArgumentError, "Constant can't already exist") unless self.class.const_get(const).nil?
+        const = constant.singularize.camelize
+        
+        # This is a fun little kludge
+        begin 
+          raise(ArgumentError, "Constant can't already exist") unless Object.const_get(const).nil?
+        rescue
+          nil
+        end
         
         klass = Class.new(base_class)
         overriden_cache = config['cache']
@@ -71,7 +77,7 @@ module Vex
           end
         end
         
-        Object.const_set(constant, klass)
+        Object.const_set(const, klass)
       end
     end
   end

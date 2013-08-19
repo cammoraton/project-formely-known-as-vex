@@ -2,8 +2,18 @@ module Vex
   module Parser
     class Main < Vex::Parser::Common
       def initialize(lines)
-        puts "Main called"
-        puts lines.inspect
+        line_parser(lines)
+      end
+      
+      def cache(arg)
+        case arg.downcase
+        when "false"
+          Vex::Application.config.cache_associations = false
+        when "disabled"
+          Vex::Application.config.cache_associations = false
+        else
+          Vex::Application.config.cache_associations = true
+        end
       end
     end
   end
