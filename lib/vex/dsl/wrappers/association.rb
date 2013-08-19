@@ -195,31 +195,32 @@ module Vex
               end
             end
             
-            # Parse in the dependencies/caches
-            # This may execute an additional series of queries if any of the target objects are not cached.
-            all_items = []
-            (0..query_depth).each do |iterate|
-              all_items = (all_items + assignments[iterate]).uniq  
-            end
-            all_items.select{ |a| a if @associations.map{|b| b["id"]}.include?(a._id.to_s)}.each do |parse|
-              if @object.vex_dependencies["triggers"].include?(parse._type.to_s.downcase.pluralize.to_sym)
-                deps = parse.vex_associations.by_types(parse.vex_dependencies["triggers"].map{|a| a.to_s.singularize.camelize}, true)
-                deps.select{ |a| a if !@associations.map{|b| b["id"]}.include?(a["id"]) and a["id"] != @object._id.to_s }.each do |dependency|
-                  @associations.push({ "id" => dependency["id"],
-                                       "type" => dependency["type"],
-                                       "name" => dependency["name"],
-                                       "source" => dependency["source"],
-                                       "dependency_only" => true})
-                end
-              end 
-              if @object.vex_dependencies["triggered_by"].include?(parse._type.to_s.downcase.pluralize.to_sym)
-                deps = parse.vex_associations.by_types(parse.vex_dependencies["triggered_by"].map{|a| a.to_s.singularize.camelize}, true)
-                deps.select{ |a| a if !@associations.map{|b| b["id"]}.include?(a["id"]) and a["id"] != @object._id.to_s }.each do |dependency|
-                  @associations.push({ "id" => dependency["id"],
-                                       "type" => dependency["type"],
-                                       "name" => dependency["name"],
-                                       "source" => dependency["source"],
-                                       "dependency_only" => true})
+            # For now only parse in full dependencies if caching is on.
+            if @object.has_cache?
+              all_items = []
+              (0..query_depth).each do |iterate|
+                all_items = (all_items + assignments[iterate]).uniq  
+              end
+              all_items.select{ |a| a if @associations.map{|b| b["id"]}.include?(a._id.to_s)}.each do |parse|
+                if @object.vex_dependencies["triggers"].include?(parse._type.to_s.downcase.pluralize.to_sym)
+                  deps = parse.vex_associations.by_types(parse.vex_dependencies["triggers"].map{|a| a.to_s.singularize.camelize}, true)
+                  deps.select{ |a| a if !@associations.map{|b| b["id"]}.include?(a["id"]) and a["id"] != @object._id.to_s }.each do |dependency|
+                    @associations.push({ "id" => dependency["id"],
+                                         "type" => dependency["type"],
+                                         "name" => dependency["name"],
+                                         "source" => dependency["source"],
+                                         "dependency_only" => true})
+                  end
+                end 
+                if @object.vex_dependencies["triggered_by"].include?(parse._type.to_s.downcase.pluralize.to_sym)
+                  deps = parse.vex_associations.by_types(parse.vex_dependencies["triggered_by"].map{|a| a.to_s.singularize.camelize}, true)
+                  deps.select{ |a| a if !@associations.map{|b| b["id"]}.include?(a["id"]) and a["id"] != @object._id.to_s }.each do |dependency|
+                    @associations.push({ "id" => dependency["id"],
+                                         "type" => dependency["type"],
+                                         "name" => dependency["name"],
+                                         "source" => dependency["source"],
+                                         "dependency_only" => true})
+                  end
                 end
               end
             end
