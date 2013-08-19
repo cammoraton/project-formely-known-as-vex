@@ -43,8 +43,8 @@ module Vex
             array = line.split(':')
             key = array.first.chomp.strip
             array.delete(array.first)
-            
-            hash = { key => array.map{ |a| a.chomp.strip }}
+            items = array.first.split(",")
+            hash = { key => items.map{ |a| a.chomp.strip }}
             args.push(hash)
           else
             args.push(line.chomp.strip)
