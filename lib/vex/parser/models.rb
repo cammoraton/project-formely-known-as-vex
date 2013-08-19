@@ -29,20 +29,31 @@ module Vex
       end
       
       
-      def puppet_type(args)
-        puts "#{@name} corresponds to puppet type #{args.inspect}"
+      def puppet_type(arg)
+        case arg
+        when "node"
+          @config["has_facts"] = true
+          @config["simulates_hiera"] = true
+        when "class"
+          
+        end
       end
       
-      def routed_as(args)
-        puts "#{@name} will be routed as #{args.inspect}"
+      def routed_as(arg)
+        @config["routed_as"] = arg
       end
       
       def scopes(args)
-        puts "#{@name} is scoped on #{args.inspect}"
+        @config["scopes"] = args
       end
       
-      def self_joining(args)
-        puts "#{@name} self_joining value is #{args.inspect}"
+      def self_joining(arg)
+        case arg.downcase
+        when "enabled"
+          @config["acts_as_tree"] = true
+        when "true"
+          @config["acts_as_tree"] = true
+        end
       end
       
     end

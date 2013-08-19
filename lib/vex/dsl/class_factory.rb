@@ -33,6 +33,14 @@ module Vex
           end
         end
         
+        if config["has_facts"]
+          klass.class_eval do has_facts; end
+        end
+        
+        if config["simulates_hiera"]
+          klass.class_eval do simulates_hiera; end
+        end
+        
         route_alias = config['routed_as']
         unless route_alias.nil?
           klass.class_eval do routed_as route_alias; end
@@ -75,6 +83,12 @@ module Vex
               klass.class_eval do assigned_and_assigned_to object.to_sym, :through => through; end
             end
           end
+        end
+        
+        scopes = config["scopes"]
+        unless scopes.nil?
+          klass.class_eval do has_scopes; end
+          # TODO: Actual scope config
         end
         
         Object.const_set(const, klass)
