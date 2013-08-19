@@ -26,7 +26,6 @@ module Vex
             @object.vex_dependencies[keyword].map{|a| a.to_s.singularize.camelize}.each do |word|
               words = ( words + [word] + self.class.const_get(word).vex_dependencies[keyword].map{|a| a.to_s.singularize.camelize }).uniq
             end
-            puts words.inspect
             return words
           end
           
