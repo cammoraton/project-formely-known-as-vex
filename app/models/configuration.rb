@@ -67,8 +67,9 @@ class Configuration
   # Keep assignments out of data
   def reserved_word_validation
     data.keys.each do |key|
-      puts "#{self.vex_assignments.keys.inspect} #{key}"
-      
+      if key == "name"
+        errors.add( :data, "Name is a reserved word")
+      end
       if key == self.name
         errors.add( :data, "Key can not equal the name of this object")
       end
