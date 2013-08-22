@@ -62,15 +62,13 @@ module Vex
           logger.debug("[DEBUG] - update_cache: new or deleted ids #{@cascade.to_json}")        
           # Now we need to add in anything that needs saved because sourcing has changed.
           self.cache.select{|a| a if (a["dependency_only"].nil? or a["dependency_only"] == false)}.map{|a| a["id"]}.each do |source|
-            #unless self.cascade_pending.include?(source)  # No need to save the same thing twice
-              this_source = self.cache.select{|a| a["source"] if a["id"] == source }
-              new_source  = old_cache.select{|a| a["source"] if a["id"] == source }
-              unless this_source.nil? or this_source.empty? or new_source.nil? or new_source.empty?
-                if this_source.first != new_source.first
-                  self.cascade_pending.push(source) unless self.cascade_pending.include?(source)
-                end
+            this_source = self.cache.select{|a| a["source"] if a["id"] == source }
+            new_source  = old_cache.select{|a| a["source"] if a["id"] == source }
+            unless this_source.nil? or this_source.empty? or new_source.nil? or new_source.empty?
+              if this_source.first != new_source.first
+                self.cascade_pending.push(source) unless self.cascade_pending.include?(source)
               end
-            #end
+            end
           end
           
           logger.debug("[DEBUG] - update_cache: after adding in changed sources, cascade equals #{@cascade.to_json}")  
