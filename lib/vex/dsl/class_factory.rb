@@ -33,6 +33,10 @@ module Vex
           end
         end
         
+        if config["acts_as_tree"]
+          klass.class_eval do acts_as_tree; end
+        end
+        
         if config["has_facts"]
           klass.class_eval do has_facts; end
         end

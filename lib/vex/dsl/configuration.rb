@@ -5,7 +5,7 @@ module Vex
     module Configuration
       extend ActiveSupport::Concern
       
-      #include Vex::Dsl::Configuration::ActsAsTree
+      include Vex::Dsl::Configuration::ActsAsTree
       include Vex::Dsl::Configuration::Assignments
       include Vex::Dsl::Configuration::Cache
       include Vex::Dsl::Configuration::Dependencies
@@ -13,7 +13,7 @@ module Vex
       include Vex::Dsl::Configuration::Scoped
       include Vex::Dsl::Configuration::Switches
       module ClassMethods
-        #include Vex::Dsl::Configuration::ActsAsTree::ClassMethods
+        include Vex::Dsl::Configuration::ActsAsTree::ClassMethods
         include Vex::Dsl::Configuration::Assignments::ClassMethods
         include Vex::Dsl::Configuration::Cache::ClassMethods
         include Vex::Dsl::Configuration::Dependencies::ClassMethods
