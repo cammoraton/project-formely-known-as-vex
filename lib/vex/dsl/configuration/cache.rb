@@ -58,7 +58,22 @@ module Vex
           # Combine and remove any direct associations( fixup_assignments will take care of those)
           self.cascade_pending = ((cascade_save + cascade_deleted) - 
                                   self.vex_associations.to_a.select{|a| a if a["source"].to_s == self._id.to_s}.map{|a| a["id"]}).uniq
-          logger.debug("[DEBUG] - update_cache: new or deleted ids #{@cascade.to_json}")  
+                            
+          logger.debug("[DEBUG] - update_cache: new or deleted ids #{@cascade.to_json}")        
+          # Now we need to add in anything that needs saved because sourcing has changed.
+          self.cache.select{|a| a if (a["dependency_only"].nil? or a["dependency_only"] == false)}.map{|a| a["id"]}.each do |source|
+            #unless self.cascade_pending.include?(source)  # No need to save the same thing twice
+              this_source = self.cache.select{|a| a["source"] if a["id"] == source }
+              new_source  = old_cache.select{|a| a["source"] if a["id"] == source }
+              unless this_source.nil? or this_source.empty? or new_source.nil? or new_source.empty?
+                if this_source.first != new_source.first
+                  self.cascade_pending.push(source) unless self.cascade_pending.include?(source)
+                end
+              end
+            #end
+          end
+          
+          logger.debug("[DEBUG] - update_cache: after adding in changed sources, cascade equals #{@cascade.to_json}")  
         end
         
         def cascade_save
