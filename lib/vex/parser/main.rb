@@ -1,3 +1,5 @@
+require "#{File.dirname(__FILE__)}/common.rb"
+
 module Vex
   module Parser
     class Main < Vex::Parser::Common
