@@ -9,12 +9,49 @@ module Vex
             @vex_cached ||= false
           end
           
+          def before_cache_methods
+            @before_cache_methods ||= []
+          end
+          
+          def after_cache_methods
+            @after_cache_methods ||= []
+          end
+          
+          def before_cascade_methods
+            @before_cascade_methods ||= []
+          end
+          
+          def after_cascade_methods
+            @after_cascade_methods ||= []
+          end
+          
           def has_cache
             @vex_cached = true
             key         :cache, Array
             
             before_save :update_cache
             after_save  :cascade_save
+          end
+          
+          # Callback hooks
+          def before_cache(method)
+            @before_cache_methods = [] if @before_cache_methods.nil?
+            @before_cache_methods.push(method) unless @before_cache_methods.include?(method)
+          end
+          
+          def after_cache(method)
+            @after_cache_methods = [] if @after_cache_methods.nil?
+            @after_cache_methods.push(method) unless @after_cache_methods.include?(method)
+          end
+          
+          def before_cascade(method)
+            @before_cascade_methods = [] if @before_cascade_methods.nil?
+            @before_cascade_methods.push(method) unless @before_cascade_methods.include?(method)
+          end
+          
+          def after_cascade(method)
+            @after_cascade_methods = [] if @after_cascade_methods.nil?
+            @after_cascade_methods.push(method) unless @after_cascade_methods.include?(method)
           end
         end
         
@@ -44,6 +81,11 @@ module Vex
         
         private
         def update_cache
+          # Callback hook
+          self.class.before_cache_methods.each do |method|
+            self.send(method)
+          end
+          
           logger.info("[INFO]  - update_cache: Updating cache for object id: #{self._id}")
           logger.info("[DEBUG] - update cache: Number of queries is #{self.vex_associations.query_depth}")
           old_cache = self.cache.dup  # Duplicate cache
@@ -72,9 +114,19 @@ module Vex
           end
           
           logger.debug("[DEBUG] - update_cache: after adding in changed sources, cascade equals #{@cascade.to_json}")  
+          
+          # Callback hook
+          self.class.after_cache_methods.each do |method|
+            self.send(method)
+          end
         end
         
         def cascade_save
+          # Before callback hook
+          self.class.before_cascade_methods.each do |method|
+            self.send(method)
+          end
+          
           ids = (self.cascade_pending - self.cascaded).uniq.map{|a| BSON::ObjectId(a)}
           query_wrapper = self.class.const_get("Configuration")
           query_wrapper.where(:_id => {:$in => ids }).all.each do |cascade|
@@ -83,6 +135,11 @@ module Vex
           end
           self.cascade_pending = []
           self.cascaded = []
+          
+          # After callback hook
+          self.class.after_cascade_methods.each do |method|
+            self.send(method)
+          end
         end
       end
     end

@@ -13,8 +13,8 @@ module Vex
           def acts_as_tree
             @vex_acts_as_tree = true
             
-            belongs_to :parent, :polymorphic => true
-            many :children, :as => :parent, :class => "Configuration"
+            #belongs_to :parent, :polymorphic => true
+            #many :children, :as => :parent, :class => "Configuration"
           end
         end
         
@@ -24,7 +24,7 @@ module Vex
         
         def is_tree?
           self.class.is_tree
-        end        
+        end
       end
     end
   end

@@ -78,8 +78,8 @@ module Vex
           
           def construct_queries
             queries = Hash.new
-            # Need to pass this through the class we're mixed in with or else it will default to the module
-            query_interface = @object.class.const_get("Configuration")
+            # Use the dynamic model base class
+            query_interface = Vex::Application.config.dynamic_model_base_class
             
             # Now construct and execute the queries
             queries[0]  = query_interface.where(:_id => { :$in => @object.assignment_ids }).fields(:name, :_id, :_type, :assignment_ids, :cache).all
