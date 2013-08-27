@@ -13,8 +13,10 @@ module Vex
           def acts_as_tree
             @vex_acts_as_tree = true
             
-            #belongs_to :parent, :polymorphic => true
-            #many :children, :as => :parent, :class => "Configuration"
+            belongs_to :parent, :polymorphic => true
+            many :children, :as => :parent, :class => self
+            
+            before_prep :inherit_data_from_parents
           end
         end
         
@@ -24,6 +26,11 @@ module Vex
         
         def is_tree?
           self.class.is_tree
+        end
+        
+        def inherit_data_from_parents
+          return {} if self.parent.nil?
+          self.parent.prep_hash
         end
       end
     end
