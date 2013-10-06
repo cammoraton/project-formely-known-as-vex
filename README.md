@@ -54,6 +54,11 @@ A lot of extra functionality is planned.  Much of this will be found inside issu
 
 At some point the relationships will be configured and the classes will be loaded dynamically at run time, with an option to store the relationship configurations in the database for clustered/distributed builds.  For now we're being a bit more conventional.
 
+Project Status
+===
+Currently on hold as I refactor modules and get good and intimate with puppetDB.
+
+
 Questions, Comments, Requests?
 ===
 
